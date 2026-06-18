@@ -158,14 +158,15 @@ onMounted(loadForEdit)
 .tags-row { border-bottom: none; }
 
 .tags { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 12px; }
-.tag { background: var(--color-primary-light); color: var(--color-primary); font-size: 13px; padding: 4px 8px 4px 12px; border-radius: 14px; display: inline-flex; align-items: center; gap: 4px; }
+.tag { background: var(--color-primary-light); color: var(--color-primary); font-size: 13px; padding: 4px 8px 4px 12px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 4px; }
 .tag i { font-style: normal; cursor: pointer; opacity: .6; }
 .tag-add { border: 1px dashed var(--color-text-placeholder); color: var(--color-text-placeholder); font-size: 13px; padding: 4px 12px; border-radius: 14px; }
 .tag-add input { width: 60px; border: none; outline: none; background: transparent; font-size: 13px; }
 
 .bottom { display: flex; gap: 10px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--color-border); background: #fff; }
-.btn-primary { flex: 1; height: 46px; border: none; border-radius: 10px; background: var(--color-primary); color: #fff; font-size: 15px; }
+.btn-primary { flex: 1; height: 46px; border: none; border-radius: var(--radius-md); background: var(--color-primary); color: #fff; font-size: 15px; font-weight: 500; box-shadow: var(--shadow-primary); transition: transform .12s ease, background .12s ease; }
 .btn-primary.block { flex: 1; }
-.btn-primary:active { background: var(--color-primary-dark); }
-.btn-outline { flex: 1; height: 46px; border: 1px solid var(--color-primary); background: #fff; color: var(--color-primary); border-radius: 10px; font-size: 15px; }
+.btn-primary:active { background: var(--color-primary-dark); transform: scale(.98); }
+.btn-outline { flex: 1; height: 46px; border: 1px solid var(--color-primary); background: #fff; color: var(--color-primary); border-radius: var(--radius-md); font-size: 15px; transition: transform .12s ease, background .12s ease; }
+.btn-outline:active { transform: scale(.98); background: var(--color-primary-light); }
 </style>

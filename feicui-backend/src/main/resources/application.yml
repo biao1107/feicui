@@ -67,6 +67,6 @@ gaocui:
     dev-print: true
   # 商家分层额度
   merchant:
-    free-product-limit: 2      # 免费商家最多发布 2 件
+    free-product-limit: 20      # 免费商家最多发布 20件
     vip-product-limit: 100     # VIP 商家最多发布 100 件
     vip-notice-days: 30        # VIP 到期前 30 天提醒

@@ -38,6 +38,7 @@ public enum ResultCode {
 
     // ---- 客资相关 4xxx ----
     LEAD_NOT_FOUND(4001, "客资不存在"),
+    LEAD_EMAIL_MASKED(4002, "该客资联系方式未解锁, 升级 VIP 后可标记"),
 
     // ---- 文件/AI 相关 5xxx ----
     FILE_UPLOAD_FAIL(5001, "文件上传失败"),

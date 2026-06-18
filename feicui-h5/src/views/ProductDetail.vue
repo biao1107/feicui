@@ -118,16 +118,16 @@ onMounted(loadProduct)
 .img-index { position: absolute; right: 14px; margin-top: -32px; color: #fff; font-size: 12px; background: rgba(0,0,0,.4); padding: 2px 8px; border-radius: 10px; }
 
 .info-block { padding: 16px; }
-.title { font-size: 20px; font-weight: 700; color: var(--color-text); }
-.price-row { margin-top: 10px; display: flex; align-items: baseline; gap: 8px; }
-.price { font-size: 24px; font-weight: 700; color: var(--color-primary); }
+.title { font-size: 20px; font-weight: 700; color: var(--color-text); line-height: 1.4; }
+.price-row { margin-top: 12px; display: flex; align-items: baseline; gap: 8px; }
+.price { font-size: 26px; font-weight: 700; color: var(--color-danger); letter-spacing: -.5px; }
 .price-tip { font-size: 12px; color: var(--color-text-placeholder); }
 
 .section { margin-top: 22px; }
-.section-title { font-size: 15px; font-weight: 600; color: var(--color-text); margin-bottom: 10px; border-left: 3px solid var(--color-primary); padding-left: 8px; line-height: 1; }
+.section-title { font-size: 15px; font-weight: 600; color: var(--color-text); margin-bottom: 10px; border-left: 3px solid var(--color-primary); padding-left: 10px; line-height: 1.2; }
 .section-text { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; white-space: pre-wrap; }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; }
-.tag { font-size: 12px; color: var(--color-primary); background: var(--color-primary-light); padding: 4px 10px; border-radius: 14px; }
+.tag { font-size: 12px; color: var(--color-primary); background: var(--color-primary-light); padding: 4px 12px; border-radius: var(--radius-pill); }
 
 .contact-bar {
   border-top: 1px solid var(--color-border); background: #fff;
@@ -136,10 +136,10 @@ onMounted(loadProduct)
 .contact-title { font-size: 15px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; }
 .contact-tip { font-size: 11px; color: var(--color-text-placeholder); font-weight: 400; }
 .contact-field { margin-top: 8px; }
-.c-input { width: 100%; height: 40px; border: 1px solid var(--color-border); border-radius: 8px; padding: 0 12px; font-size: 14px; outline: none; background: #fafbfc; }
-.c-input:focus { border-color: var(--color-primary); }
-.contact-btn { width: 100%; height: 46px; margin-top: 10px; border: none; border-radius: 10px; background: var(--color-primary); color: #fff; font-size: 15px; font-weight: 500; box-shadow: 0 4px 12px rgba(16,164,122,.25); }
-.contact-btn:active { background: var(--color-primary-dark); }
-.contact-btn:active { background: var(--color-primary-dark); }
+.c-input { width: 100%; height: 42px; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 0 12px; font-size: 14px; outline: none; background: #fafbfc; transition: border-color .15s ease, background .15s ease; }
+.c-input:focus { border-color: var(--color-primary); background: #fff; }
+.contact-btn { width: 100%; height: 46px; margin-top: 12px; border: none; border-radius: var(--radius-md); background: var(--color-primary); color: #fff; font-size: 15px; font-weight: 500; box-shadow: var(--shadow-primary); transition: transform .12s ease, background .12s ease; }
+.contact-btn:active { background: var(--color-primary-dark); transform: scale(.98); }
+.contact-btn:disabled { opacity: .6; box-shadow: none; }
 .contact-privacy { font-size: 11px; color: var(--color-text-placeholder); text-align: center; margin-top: 8px; }
 </style>

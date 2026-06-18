@@ -31,46 +31,49 @@
 
       <!-- 有消息: 渲染对话 -->
       <template v-else>
-        <div v-for="(m, i) in chatStore.messages" :key="i" :class="['msg-row', m.role]">
-          <!-- AI 消息 -->
-          <template v-if="m.role === 'ai'">
-            <div class="avatar bot-avatar small">
-              <svg viewBox="0 0 24 24" width="22" height="22"><rect x="5" y="7" width="14" height="11" rx="3" fill="#fff"/><circle cx="9.5" cy="12" r="1.3" fill="#10A47A"/><circle cx="14.5" cy="12" r="1.3" fill="#10A47A"/></svg>
-            </div>
-            <div class="ai-content">
-              <div v-if="m.text" class="ai-bubble">{{ m.text }}</div>
-              <!-- 翡翠卡片 -->
-              <template v-if="m.cards && m.cards.length">
-                <div class="cards-title">为您找到以下优质货源</div>
-                <div class="card" v-for="card in m.cards" :key="card.id" @click="openProduct(card.id)">
-                  <img class="card-img" :src="card.coverImage" alt="" @error="onImgError" />
-                  <div class="card-info">
-                    <div class="card-title ellipsis">{{ card.title }}</div>
-                    <div class="card-tags">
-                      <span class="tag" v-for="t in (card.tags || [])" :key="t">{{ t }}</span>
-                    </div>
-                    <div class="card-price-row">
-                      <span class="card-price">¥{{ formatPrice(card.price) }}</span>
-                      <span class="card-source">商家货源</span>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </div>
-          </template>
+        <div v-for="(m, i) in chatStore.messages" :key="i" class="msg-group">
+          <div :class="['msg-row', m.role]">
+            <!-- AI 文字消息 -->
+            <template v-if="m.role === 'ai'">
+              <div class="avatar bot-avatar small">
+                <svg viewBox="0 0 24 24" width="22" height="22"><rect x="5" y="7" width="14" height="11" rx="3" fill="#fff"/><circle cx="9.5" cy="12" r="1.3" fill="#2E8B57"/><circle cx="14.5" cy="12" r="1.3" fill="#2E8B57"/></svg>
+              </div>
+              <div class="ai-content">
+                <div v-if="m.text" class="ai-bubble">{{ m.text }}</div>
+              </div>
+            </template>
 
-          <!-- 用户消息 -->
-          <template v-else>
-            <div class="user-bubble">{{ m.text }}</div>
-            <div class="avatar user-avatar small">
-              <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="9" r="3.5" fill="#fff"/><path d="M5 20c1-4 4-5.5 7-5.5s6 1.5 7 5.5" fill="#fff"/></svg>
+            <!-- 用户消息 -->
+            <template v-else>
+              <div class="user-bubble">{{ m.text }}</div>
+              <div class="avatar user-avatar small">
+                <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="9" r="3.5" fill="#fff"/><path d="M5 20c1-4 4-5.5 7-5.5s6 1.5 7 5.5" fill="#fff"/></svg>
+              </div>
+            </template>
+          </div>
+
+          <!-- 翡翠卡片: 全宽货源列表(脱离气泡宽度限制, 避免溢出截断) -->
+          <div v-if="m.role === 'ai' && m.cards && m.cards.length" class="cards-section">
+            <div class="cards-title">为您找到以下优质货源<span class="cards-count">（共{{ m.cards.length }}件）</span></div>
+            <div class="cards-grid">
+              <div class="card" v-for="card in m.cards" :key="card.id" @click="openProduct(card.id)">
+                <div class="card-img-box"><img class="card-img" :src="card.coverImage" alt="" @error="onImgError" /></div>
+                <div class="card-title ellipsis">{{ card.title }}</div>
+                <div class="card-tags">
+                  <span class="tag" v-for="t in (card.tags || []).slice(0, 3)" :key="t">{{ t }}</span>
+                </div>
+                <div class="card-price-row">
+                  <span class="card-price">¥{{ formatPrice(card.price) }}</span>
+                  <span class="card-source" :class="{ vip: card.vip }">{{ card.vip ? 'VIP' : '商家' }}</span>
+                </div>
+              </div>
             </div>
-          </template>
+          </div>
         </div>
 
         <!-- 加载中 -->
         <div v-if="loading" class="msg-row ai">
-          <div class="avatar bot-avatar small"><svg viewBox="0 0 24 24" width="22" height="22"><rect x="5" y="7" width="14" height="11" rx="3" fill="#fff"/><circle cx="9.5" cy="12" r="1.3" fill="#10A47A"/><circle cx="14.5" cy="12" r="1.3" fill="#10A47A"/></svg></div>
+          <div class="avatar bot-avatar small"><svg viewBox="0 0 24 24" width="22" height="22"><rect x="5" y="7" width="14" height="11" rx="3" fill="#fff"/><circle cx="9.5" cy="12" r="1.3" fill="#2E8B57"/><circle cx="14.5" cy="12" r="1.3" fill="#2E8B57"/></svg></div>
           <div class="ai-bubble typing">正在匹配优质翡翠货源<span class="dots"><i></i><i></i><i></i></span></div>
         </div>
       </template>
@@ -163,7 +166,8 @@ function openProduct(id) {
 }
 
 function onImgError(e) {
-  e.target.style.display = 'none'
+  // 加载失败保留占位盒子(绿底), 保证卡片图区尺寸统一
+  e.target.style.opacity = '0'
 }
 
 function formatPrice(p) {
@@ -194,8 +198,8 @@ onMounted(() => scrollBottom())
 .logo-icon {
   width: 30px; height: 30px; border-radius: 8px; display: flex;
   align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #10A47A, #0D8C66);
-  box-shadow: 0 2px 6px rgba(16, 164, 122, 0.3);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  box-shadow: 0 2px 6px rgba(46, 139, 87, 0.3);
 }
 .logo-text { font-size: 17px; font-weight: 700; color: var(--color-text); letter-spacing: 0.5px; }
 .entry-btn {
@@ -210,18 +214,19 @@ onMounted(() => scrollBottom())
 /* 欢迎语 */
 .welcome { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 16px; }
 .welcome-bubble {
-  background: #fff; border-radius: 0 12px 12px 12px;
-  padding: 12px 14px; max-width: 80%; font-size: 14px; line-height: 1.6;
+  background: #fff; border-radius: 4px 16px 16px 16px;
+  padding: 12px 14px; max-width: 82%; font-size: 14px; line-height: 1.6;
+  box-shadow: var(--shadow-card);
 }
 .welcome-bubble p { margin: 0; }
 
-.chips { display: flex; flex-direction: column; gap: 10px; padding-left: 40px; }
+.chips { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; padding-left: 40px; margin-top: 4px; }
 .chip {
-  align-self: flex-start;
-  background: #fff; border: 1px solid var(--color-primary);
-  color: var(--color-primary); border-radius: 999px;
-  padding: 8px 16px; font-size: 13px;
+  background: var(--color-primary-light); color: var(--color-primary); border: 1px solid transparent;
+  border-radius: var(--radius-pill); padding: 6px 14px; font-size: 12px; font-weight: 500;
+  transition: transform .12s ease, background .12s ease;
 }
+.chip:active { transform: scale(.95); background: #d6e9df; }
 
 /* 消息行 */
 .msg-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: flex-start; }
@@ -234,34 +239,39 @@ onMounted(() => scrollBottom())
 
 .ai-content { max-width: 78%; display: flex; flex-direction: column; gap: 8px; }
 .ai-bubble {
-  background: #fff; border-radius: 0 12px 12px 12px;
+  background: #fff; border-radius: 4px 16px 16px 16px;
   padding: 10px 14px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; word-break: break-word;
-  align-self: flex-start;
+  align-self: flex-start; box-shadow: var(--shadow-card);
 }
 .user-bubble {
   background: var(--color-primary); color: #fff;
-  border-radius: 12px 2px 12px 12px; /* 右上角圆角较小 */
+  border-radius: 16px 4px 16px 16px;
   padding: 10px 14px; font-size: 14px; line-height: 1.6; max-width: 78%;
   white-space: pre-wrap; word-break: break-word;
 }
 
-/* 翡翠卡片 */
-.cards-title { font-size: 14px; font-weight: 600; color: var(--color-text); margin-top: 4px; }
+/* 翡翠卡片 (3列横排, 图在上) */
+.msg-group { width: 100%; display: flex; flex-direction: column; }
+.cards-section { width: 100%; margin: 6px 0 16px; }
+.cards-title { font-size: 14px; font-weight: 600; color: var(--color-text); margin-bottom: 8px; }
+.cards-count { font-size: 12px; color: var(--color-text-placeholder); font-weight: 400; }
+.cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .card {
-  display: flex; gap: 10px; background: #fff; border-radius: 12px;
-  padding: 10px; align-items: center; cursor: pointer;
-  box-shadow: 0 2px 10px rgba(16, 164, 122, 0.08);
-  transition: transform .15s;
+  background: #fff; border-radius: var(--radius-md); padding: 6px; cursor: pointer;
+  box-shadow: var(--shadow-card);
+  display: flex; flex-direction: column; gap: 4px;
+  transition: transform .15s ease, box-shadow .15s ease;
 }
-.card:active { transform: scale(0.98); }
-.card-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; background: var(--color-primary-light); flex-shrink: 0; }
-.card-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-.card-title { font-size: 14px; font-weight: 600; }
-.card-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-.tag { font-size: 11px; color: var(--color-primary); background: var(--color-primary-light); padding: 2px 6px; border-radius: 4px; }
-.card-price-row { display: flex; align-items: baseline; gap: 6px; }
-.card-price { font-size: 16px; font-weight: 700; color: var(--color-primary); }
-.card-source { font-size: 10px; color: var(--color-text-placeholder); }
+.card:active { transform: scale(0.98); box-shadow: var(--shadow-float); }
+.card-img-box { width: 100%; aspect-ratio: 1 / 1; border-radius: 6px; overflow: hidden; background: var(--color-primary-light); }
+.card-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-title { font-size: 12px; font-weight: 600; line-height: 1.3; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 3px; }
+.tag { font-size: 10px; color: var(--color-text); background: #EDEFF2; padding: 1px 5px; border-radius: 2px; }
+.card-price-row { display: flex; align-items: center; gap: 4px; }
+.card-price { font-size: 14px; font-weight: 700; color: #F5222D; }
+.card-source { font-size: 10px; color: #fff; background: #FFA500; padding: 1px 5px; border-radius: 2px; }
+.card-source.vip { background: var(--color-gold); font-weight: 600; }
 
 /* 加载动画 */
 .typing { display: flex; align-items: center; gap: 6px; }
@@ -275,11 +285,12 @@ onMounted(() => scrollBottom())
 .input-area { background: #fff; border-top: 1px solid var(--color-border); padding: 10px 12px 8px; }
 .input-row { display: flex; gap: 8px; align-items: flex-end; }
 .input-box {
-  flex: 1; resize: none; border: 1px solid var(--color-border); border-radius: 10px;
+  flex: 1; resize: none; border: 1px solid var(--color-border); border-radius: var(--radius-md);
   padding: 8px 12px; font-size: 14px; line-height: 1.5; min-height: 40px; max-height: 120px;
   font-family: inherit; background: #f9fafb; outline: none;
+  transition: border-color .15s ease, background .15s ease;
 }
-.input-box:focus { border-color: var(--color-primary); }
+.input-box:focus { border-color: var(--color-primary); background: #fff; }
 .send-btn {
   background: #c8d4cf; color: #fff; border: none; border-radius: 10px;
   padding: 0 16px; height: 40px; font-size: 14px; font-weight: 500; white-space: nowrap;

@@ -130,4 +130,25 @@ public class MerchantService {
         m.setEmailNotify(req.getEmailNotify() == null ? 1 : req.getEmailNotify());
         merchantMapper.updateById(m);
     }
+
+    /**
+     * 模拟升级/续费 VIP (演示/测试用, 无真实支付).
+     * tier=VIP; vipExpireTime: 当前 VIP 未过期则在原基础上顺延, 否则从现在起算 months 个月.
+     */
+    public MerchantProfileVO upgrade(int months) {
+        if (months <= 0) {
+            months = 12;
+        }
+        Merchant m = getCurrent();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime base = (Merchant.TIER_VIP.equals(m.getTier())
+                && m.getVipExpireTime() != null
+                && m.getVipExpireTime().isAfter(now))
+                ? m.getVipExpireTime()
+                : now;
+        m.setTier(Merchant.TIER_VIP);
+        m.setVipExpireTime(base.plusMonths(months));
+        merchantMapper.updateById(m);
+        return getProfile();
+    }
 }

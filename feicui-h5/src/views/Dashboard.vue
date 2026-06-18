@@ -71,7 +71,7 @@
 import { ref, reactive, computed, onActivated, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getDashboard } from '@/api/merchant'
-import { leadList } from '@/api/lead'
+import { leadRecent } from '@/api/lead'
 import { unreadCount } from '@/api/notify'
 import { useAuthStore } from '@/stores/auth'
 
@@ -97,8 +97,8 @@ function fmtTime(t) {
 async function load() {
   try {
     Object.assign(data, await getDashboard())
-    const res = await leadList({ current: 1, size: 3 })
-    recent.value = res.records || []
+    const res = await leadRecent(3)
+    recent.value = res || []
     const c = await unreadCount()
     unread.value = c.count || 0
   } catch (e) { /* 已提示 */ }
@@ -122,15 +122,15 @@ onActivated(load)
 .lbl { font-size: 11px; margin-top: 4px; opacity: .9; }
 
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px; }
-.grid-item { background: #fff; border-radius: 14px; padding: 18px 0; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.04); transition: transform .15s; }
-.grid-item:active { transform: scale(0.97); }
-.gi-ico { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; }
+.grid-item { background: #fff; border-radius: var(--radius-lg); padding: 18px 0; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 14px; box-shadow: var(--shadow-card); transition: transform .15s ease, box-shadow .15s ease; }
+.grid-item:active { transform: scale(0.97); box-shadow: var(--shadow-float); }
+.gi-ico { width: 44px; height: 44px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; }
 .bg-green { background: var(--color-primary); }
 .bg-blue { background: #3B82F6; }
 .bg-orange { background: #F59E0B; }
 .bg-purple { background: #8B5CF6; }
 
-.block { margin: 0 14px; background: #fff; border-radius: 14px; padding: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+.block { margin: 0 14px; background: #fff; border-radius: var(--radius-lg); padding: 14px; box-shadow: var(--shadow-card); }
 .block-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .block-title { font-size: 15px; font-weight: 600; }
 .more { font-size: 13px; color: var(--color-text-placeholder); }

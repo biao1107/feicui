@@ -107,9 +107,10 @@ onUnmounted(() => { if (timer) clearInterval(timer) })
 .form { width: 100%; margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
 .field {
   display: flex; align-items: center; border: 1px solid var(--color-border);
-  border-radius: 10px; padding: 0 12px; height: 48px; background: #fafbfc;
+  border-radius: var(--radius-md); padding: 0 12px; height: 48px; background: #fafbfc;
+  transition: border-color .15s ease, background .15s ease;
 }
-.field:focus-within { border-color: var(--color-primary); }
+.field:focus-within { border-color: var(--color-primary); background: #fff; }
 .field-icon { font-size: 18px; color: var(--color-text-placeholder); margin-right: 8px; }
 .field-input { flex: 1; border: none; outline: none; background: transparent; font-size: 15px; height: 100%; }
 .code-input { max-width: 55%; }
@@ -120,17 +121,17 @@ onUnmounted(() => { if (timer) clearInterval(timer) })
 .code-btn:disabled { color: var(--color-text-placeholder); }
 
 .submit-btn {
-  height: 48px; border: none; border-radius: 10px;
+  height: 48px; border: none; border-radius: var(--radius-md);
   background: var(--color-primary); color: #fff; font-size: 16px; font-weight: 500;
-  margin-top: 8px; box-shadow: 0 4px 14px rgba(16, 164, 122, 0.28);
+  margin-top: 8px; box-shadow: var(--shadow-primary); transition: transform .12s ease, background .12s ease;
 }
-.submit-btn:active { background: var(--color-primary-dark); }
-.submit-btn:disabled { opacity: .7; }
+.submit-btn:active { background: var(--color-primary-dark); transform: scale(.98); }
+.submit-btn:disabled { opacity: .6; box-shadow: none; }
 
 .features { display: flex; justify-content: space-between; width: 100%; margin-top: 36px; }
 .feat { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
 .feat-ico {
-  width: 36px; height: 36px; border-radius: 50%; background: #f0f1f3; color: #8a929c;
+  width: 36px; height: 36px; border-radius: 50%; background: var(--color-primary-light); color: var(--color-primary);
   display: flex; align-items: center; justify-content: center; font-size: 16px;
 }
 .feat span:last-child { font-size: 11px; color: var(--color-text-secondary); }

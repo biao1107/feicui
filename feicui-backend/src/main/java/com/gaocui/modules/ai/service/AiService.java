@@ -9,6 +9,8 @@ import com.gaocui.common.exception.BusinessException;
 import com.gaocui.modules.ai.dto.AiGenerateResponse;
 import com.gaocui.modules.ai.dto.AiMatchResponse;
 import com.gaocui.modules.ai.dto.ProductCard;
+import com.gaocui.modules.merchant.entity.Merchant;
+import com.gaocui.modules.merchant.mapper.MerchantMapper;
 import com.gaocui.modules.product.entity.Product;
 import com.gaocui.modules.product.mapper.ProductMapper;
 import dev.langchain4j.community.model.dashscope.QwenChatModel;
@@ -22,10 +24,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -45,12 +50,14 @@ public class AiService {
 
     private final DashScopeProperties props;
     private final ProductMapper productMapper;
+    private final MerchantMapper merchantMapper;
     private final QwenChatModel chatModel;
     private final QwenChatModel visionModel;
 
-    public AiService(DashScopeProperties props, ProductMapper productMapper) {
+    public AiService(DashScopeProperties props, ProductMapper productMapper, MerchantMapper merchantMapper) {
         this.props = props;
         this.productMapper = productMapper;
+        this.merchantMapper = merchantMapper;
         this.chatModel = QwenChatModel.builder()
                 .apiKey(props.getApiKey())
                 .modelName(props.getChatModel())
@@ -67,25 +74,40 @@ public class AiService {
         List<Product> listed = productMapper.selectList(new LambdaQueryWrapper<Product>()
                 .eq(Product::getStatus, Product.STATUS_LISTED));
 
-        // 2. 构建货源库上下文(精简字段)
+        // 1.1 标记 VIP 商家(生效层级=VIP 且未过期), 供候选排序与 LLM 选品倾斜
+        Set<Long> vipMerchantIds = vipMerchantIdsOf(listed);
+
+        // 1.2 候选池 VIP 商品优先排列, 再按上架时间倒序 —— 排序 + prompt 双重引导 LLM 优先 VIP
+        listed.sort((a, b) -> {
+            int av = vipMerchantIds.contains(a.getMerchantId()) ? 0 : 1;
+            int bv = vipMerchantIds.contains(b.getMerchantId()) ? 0 : 1;
+            if (av != bv) {
+                return av - bv;
+            }
+            return b.getCreatedTime().compareTo(a.getCreatedTime());
+        });
+
+        // 2. 构建货源库上下文(精简字段, 含 isVip 标记)
         String ctx = listed.stream().map(p -> {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("id", p.getId());
+            m.put("isVip", vipMerchantIds.contains(p.getMerchantId()));
             m.put("title", p.getTitle());
             m.put("tags", p.getTags());
             m.put("price", p.getPrice());
             return toRawJson(m);
         }).collect(Collectors.joining(","));
 
-        // 3. 让 LLM 判断需求并选品
+        // 3. 让 LLM 判断需求并选品(VIP 优先)
         String prompt = "你是高翠网的AI找货助手, 专帮买家匹配翡翠货源。\n"
-                + "货源库(JSON数组): [" + ctx + "]\n"
+                + "货源库(JSON数组, isVip 标记是否为VIP商家货源): [" + ctx + "]\n"
                 + "买家需求: \"" + message + "\"\n"
                 + "请判断该需求是否为翡翠找货需求, 并从货源库选出最匹配的(最多3个)商品。\n"
                 + "严格只返回如下JSON, 不要任何额外文字或```标记:\n"
-                + "{\"isJadeNeed\":true或false,\"reply\":\"给买家的中文回复(匹配到则说明已找到N件优质货源)\","
+                + "{\"isJadeNeed\":true或false,\"reply\":\"给买家的简短中文回复(不要写具体件数, 件数由系统展示; 可表达已为您找到优质货源)\","
                 + "\"productIds\":[匹配的商品id, 最多3个]}\n"
-                + "规则: 若非翡翠需求, isJadeNeed=false, reply固定为:" + NON_JADE_REPLY + ", productIds为空数组; "
+                + "规则: 选品优先级——先按与买家需求的匹配度排序; 匹配度相近时, 优先选择 VIP 商家(isVip=true)的商品; "
+                + "若非翡翠需求, isJadeNeed=false, reply固定为:" + NON_JADE_REPLY + ", productIds为空数组; "
                 + "货源库为空时 productIds 为空数组。";
 
         JsonNode node = parseJsonObject(chat(prompt, chatModel));
@@ -99,7 +121,7 @@ public class AiService {
         }
         resp.setReply(node.path("reply").asText("已为您解析需求，正在匹配优质翡翠货源..."));
 
-        // 4. 按 LLM 返回的 id 装配卡片
+        // 4. 按 LLM 返回的 id 顺序装配卡片(LLM 已综合匹配度+VIP 排序)
         List<Long> ids = new ArrayList<>();
         node.path("productIds").forEach(n -> {
             try {
@@ -107,10 +129,13 @@ public class AiService {
             } catch (Exception ignored) {
             }
         });
-        List<ProductCard> cards = listed.stream()
-                .filter(p -> ids.contains(p.getId()))
+        Map<Long, Product> idMap = listed.stream()
+                .collect(Collectors.toMap(Product::getId, p -> p, (a, b) -> a));
+        List<ProductCard> cards = ids.stream()
+                .map(idMap::get)
+                .filter(Objects::nonNull)
                 .limit(3)
-                .map(this::toCard)
+                .map(p -> toCard(p, vipMerchantIds.contains(p.getMerchantId())))
                 .toList();
         resp.setProducts(cards);
         return resp;
@@ -200,15 +225,38 @@ public class AiService {
         }
     }
 
-    private ProductCard toCard(Product p) {
+    private ProductCard toCard(Product p, boolean vip) {
         ProductCard c = new ProductCard();
         c.setId(p.getId());
         c.setTitle(p.getTitle());
         c.setTags(p.getTags());
         c.setPrice(p.getPrice());
+        c.setVip(vip);
         if (p.getImages() != null && !p.getImages().isEmpty()) {
             c.setCoverImage(p.getImages().get(0));
         }
         return c;
+    }
+
+    /** 批量判定这些商品所属商家中, 当前生效为 VIP(未过期)的 merchantId 集合 */
+    private Set<Long> vipMerchantIdsOf(List<Product> products) {
+        Set<Long> merchantIds = products.stream()
+                .map(Product::getMerchantId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        if (merchantIds.isEmpty()) {
+            return Set.of();
+        }
+        return merchantMapper.selectBatchIds(merchantIds).stream()
+                .filter(this::isVipEffective)
+                .map(Merchant::getId)
+                .collect(Collectors.toSet());
+    }
+
+    /** 生效层级为 VIP: tier=VIP 且未到期 */
+    private boolean isVipEffective(Merchant m) {
+        return Merchant.TIER_VIP.equals(m.getTier())
+                && m.getVipExpireTime() != null
+                && m.getVipExpireTime().isAfter(LocalDateTime.now());
     }
 }

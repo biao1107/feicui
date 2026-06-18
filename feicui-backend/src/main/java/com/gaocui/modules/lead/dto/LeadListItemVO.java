@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * 客资列表项.
- * buyerEmail: VIP 完整显示, 免费商家脱敏.
+ * buyerEmail: VIP 全部完整; 免费商家: 已联系全完整 + 未联系最近3条完整, 其余脱敏.
  */
 public class LeadListItemVO {
 

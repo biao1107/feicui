@@ -50,12 +50,12 @@ onActivated(load)
 .notifications { background: var(--color-bg); }
 .read-all { font-size: 13px; color: var(--color-primary); }
 .list { padding: 10px 12px; }
-.notify-item { display: flex; gap: 12px; background: #fff; border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+.notify-item { display: flex; gap: 12px; background: #fff; border-radius: var(--radius-md); padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow-card); }
 .notify-item.unread { border-left: 3px solid var(--color-primary); }
 .n-time { font-size: 12px; color: var(--color-text-placeholder); width: 70px; flex-shrink: 0; }
 .n-content { flex: 1; font-size: 14px; line-height: 1.6; }
-.n-type { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 4px; margin-right: 6px; }
+.n-type { display: inline-block; font-size: 11px; font-weight: 500; padding: 1px 8px; border-radius: var(--radius-pill); margin-right: 6px; }
 .n-type.NEW_LEAD { color: var(--color-primary); background: var(--color-primary-light); }
 .n-type.VIP_EXPIRE { color: var(--color-gold); background: var(--color-gold-light); }
-.empty { text-align: center; color: var(--color-text-placeholder); padding: 40px 0; }
+.empty { text-align: center; color: var(--color-text-placeholder); padding: 56px 0; font-size: 13px; }
 </style>

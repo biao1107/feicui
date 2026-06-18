@@ -108,14 +108,14 @@ onActivated(load)
 <style scoped>
 .product-mgmt { background: var(--color-bg); }
 .list { padding: 10px 12px; }
-.prod-item { display: flex; gap: 10px; background: #fff; border-radius: 12px; padding: 10px; margin-bottom: 10px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
-.prod-img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; background: var(--color-primary-light); flex-shrink: 0; }
+.prod-item { display: flex; gap: 10px; background: #fff; border-radius: var(--radius-md); padding: 10px; margin-bottom: 10px; align-items: center; box-shadow: var(--shadow-card); }
+.prod-img { width: 70px; height: 70px; border-radius: var(--radius-sm); object-fit: cover; background: var(--color-primary-light); flex-shrink: 0; }
 .prod-info { flex: 1; min-width: 0; }
 .prod-title { font-size: 15px; font-weight: 600; }
 .prod-price { font-size: 14px; color: var(--color-primary); font-weight: 600; margin-top: 4px; }
 .prod-time { font-size: 11px; color: var(--color-text-placeholder); margin-top: 4px; }
 .prod-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
-.status-tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+.status-tag { font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: var(--radius-pill); }
 .status-tag.LISTED { color: var(--color-primary); background: var(--color-primary-light); }
 .status-tag.DRAFT { color: #9CA3AF; background: #f0f1f3; }
 .status-tag.DELISTED { color: #EF4444; background: #fef2f2; }
@@ -124,6 +124,7 @@ onActivated(load)
 .prod-actions button.del { color: var(--color-danger); }
 .empty { text-align: center; color: var(--color-text-placeholder); padding: 40px 0; font-size: 14px; }
 
-.add-btn { margin: 0 16px calc(16px + env(safe-area-inset-bottom)); height: 46px; border: none; border-radius: 10px; background: var(--color-primary); color: #fff; font-size: 15px; }
-.add-btn.disabled { background: #c8d4cf; }
+.add-btn { margin: 0 16px calc(16px + env(safe-area-inset-bottom)); height: 46px; border: none; border-radius: var(--radius-md); background: var(--color-primary); color: #fff; font-size: 15px; font-weight: 500; box-shadow: var(--shadow-primary); transition: transform .12s ease; }
+.add-btn:active { transform: scale(.98); }
+.add-btn.disabled { background: #c8d4cf; box-shadow: none; }
 </style>

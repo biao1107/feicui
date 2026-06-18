@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * 商家客资管理接口 (需登录).
- * VIP 可看完整买家邮箱, 免费商家自动脱敏.
+ * VIP 全部客资可见完整邮箱; 免费商家: 已联系全部完整 + 未联系最近3条完整, 其余脱敏.
  */
 @Tag(name = "客资管理", description = "客资列表/详情/联系状态")
 @RestController
@@ -31,7 +32,7 @@ public class LeadController {
         this.leadService = leadService;
     }
 
-    @Operation(summary = "客资列表(按状态过滤, 分页; 免费邮箱脱敏)")
+    @Operation(summary = "客资列表(按状态过滤, 分页; 免费: 已联系全完整+未联系最近3条完整, 其余脱敏)")
     @GetMapping
     public Result<PageResult<LeadListItemVO>> page(
             @RequestParam(required = false) String status,
@@ -40,7 +41,13 @@ public class LeadController {
         return Result.success(leadService.page(current, size, status));
     }
 
-    @Operation(summary = "客资详情(免费商家邮箱脱敏)")
+    @Operation(summary = "首页最近客资预览(邮箱完整, 限本商家)")
+    @GetMapping("/recent")
+    public Result<List<LeadListItemVO>> recent(@RequestParam(defaultValue = "3") int limit) {
+        return Result.success(leadService.recent(limit));
+    }
+
+    @Operation(summary = "客资详情(免费: 已联系全完整+未联系最近3条完整, 其余脱敏)")
     @GetMapping("/{id}")
     public Result<LeadDetailVO> detail(@PathVariable Long id) {
         return Result.success(leadService.detail(id));

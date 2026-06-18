@@ -14,6 +14,8 @@ public class ProductCard {
     private BigDecimal price;
     /** 第一张图 */
     private String coverImage;
+    /** 是否为 VIP 商家货源 */
+    private boolean vip;
 
     public Long getId() {
         return id;
@@ -53,5 +55,13 @@ public class ProductCard {
 
     public void setCoverImage(String coverImage) {
         this.coverImage = coverImage;
+    }
+
+    public boolean isVip() {
+        return vip;
+    }
+
+    public void setVip(boolean vip) {
+        this.vip = vip;
     }
 }

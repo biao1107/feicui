@@ -58,16 +58,18 @@ onActivated(load)
 <style scoped>
 .lead-list { background: var(--color-bg); }
 .list { padding: 10px 12px; }
-.lead-item { display: flex; gap: 8px; background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 10px; align-items: stretch; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+.lead-item { display: flex; gap: 8px; background: #fff; border-radius: var(--radius-md); padding: 12px; margin-bottom: 10px; align-items: stretch; box-shadow: var(--shadow-card); transition: transform .12s ease; }
+.lead-item:active { transform: scale(.99); }
 .left { width: 70px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
 .time { font-size: 11px; color: var(--color-text-placeholder); }
-.status { font-size: 11px; }
-.status.PENDING { color: var(--color-gold); }
-.status.CONTACTED { color: var(--color-primary); }
+.status { font-size: 11px; font-weight: 500; padding: 1px 8px; border-radius: var(--radius-pill); width: fit-content; }
+.status.PENDING { color: var(--color-gold); background: var(--color-gold-light); }
+.status.CONTACTED { color: var(--color-primary); background: var(--color-primary-light); }
 .mid { flex: 1; min-width: 0; }
 .product { font-size: 14px; font-weight: 600; }
 .msg { font-size: 13px; color: var(--color-text-secondary); margin-top: 6px; }
 .right { font-size: 11px; color: var(--color-text-secondary); align-self: flex-end; white-space: nowrap; }
-.empty { text-align: center; color: var(--color-text-placeholder); padding: 40px 0; }
-.upgrade-btn { margin: 0 16px calc(16px + env(safe-area-inset-bottom)); height: 46px; border: none; border-radius: 10px; background: var(--color-gold); color: #fff; font-size: 15px; }
+.empty { text-align: center; color: var(--color-text-placeholder); padding: 56px 0; font-size: 13px; }
+.upgrade-btn { margin: 0 16px calc(16px + env(safe-area-inset-bottom)); height: 46px; border: none; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--color-gold), #d99a2b); color: #fff; font-size: 15px; font-weight: 500; box-shadow: 0 6px 16px rgba(232,181,71,.3); transition: transform .12s ease; }
+.upgrade-btn:active { transform: scale(.98); }
 </style>

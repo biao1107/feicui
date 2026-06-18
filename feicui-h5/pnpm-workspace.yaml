@@ -1,3 +1,5 @@
 allowBuilds:
   esbuild: true
   vue-demi: true
+# 关闭"运行脚本前的依赖状态检查", 避免误报 esbuild 构建脚本而阻塞 dev/build
+verifyDepsBeforeRun: false

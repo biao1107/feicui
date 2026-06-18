@@ -124,13 +124,14 @@ loadQuota()
 .step-tip { font-size: 13px; color: var(--color-text-placeholder); padding: 4px 16px 16px; }
 
 .upload-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 16px; }
-.upload-box { aspect-ratio: 1; border-radius: 10px; overflow: hidden; position: relative; background: var(--color-primary-light); }
+.upload-box { aspect-ratio: 1; border-radius: var(--radius-md); overflow: hidden; position: relative; background: var(--color-primary-light); }
 .upload-box img { width: 100%; height: 100%; object-fit: cover; }
 .upload-box.add { border: 1px dashed var(--color-text-placeholder); background: #f5f7fa; display: flex; align-items: center; justify-content: center; color: var(--color-text-placeholder); font-size: 30px; }
 .del { position: absolute; top: 2px; right: 4px; color: #fff; background: rgba(0,0,0,.5); width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; }
 
 .quota { padding: 20px 16px; font-size: 13px; color: var(--color-text-secondary); }
 
-.ai-btn { margin: 0 16px calc(16px + env(safe-area-inset-bottom)); height: 48px; border: none; border-radius: 10px; background: var(--color-primary); color: #fff; font-size: 16px; }
-.ai-btn.disabled { background: #c8d4cf; }
+.ai-btn { margin: 0 16px calc(16px + env(safe-area-inset-bottom)); height: 48px; border: none; border-radius: var(--radius-md); background: var(--color-primary); color: #fff; font-size: 16px; font-weight: 500; box-shadow: var(--shadow-primary); transition: transform .12s ease; }
+.ai-btn:active { transform: scale(.98); }
+.ai-btn.disabled { background: #c8d4cf; box-shadow: none; }
 </style>

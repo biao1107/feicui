@@ -30,5 +30,16 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('fc_merchant')
   }
 
-  return { token, merchant, isLogin, isVip, setLogin, clear }
+  /** 更新商家信息(如升级 VIP 后刷新 tier/vipExpireTime) */
+  function setMerchant(p) {
+    merchant.value = {
+      id: p.id ?? merchant.value?.id,
+      email: p.email ?? merchant.value?.email,
+      tier: p.tier,
+      vipExpireTime: p.vipExpireTime
+    }
+    localStorage.setItem('fc_merchant', JSON.stringify(merchant.value))
+  }
+
+  return { token, merchant, isLogin, isVip, setLogin, setMerchant, clear }
 })

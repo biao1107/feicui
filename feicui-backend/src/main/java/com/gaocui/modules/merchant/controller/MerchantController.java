@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -54,6 +55,12 @@ public class MerchantController {
     public Result<Void> updateNotificationSettings(@RequestBody @Valid NotificationSettingRequest req) {
         merchantService.updateNotificationSettings(req);
         return Result.success();
+    }
+
+    @Operation(summary = "升级/续费VIP(模拟开通, 演示用)")
+    @PostMapping("/upgrade")
+    public Result<MerchantProfileVO> upgrade(@RequestParam(defaultValue = "12") int months) {
+        return Result.success(merchantService.upgrade(months));
     }
 
     @Operation(summary = "退出登录(客户端清除 token 即可)")

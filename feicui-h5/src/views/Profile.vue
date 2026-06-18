@@ -139,15 +139,16 @@ onUnmounted(() => { if (timer) clearInterval(timer) })
 
 <style scoped>
 .profile { background: var(--color-bg); }
-.seller-card { display: flex; align-items: center; gap: 14px; background: #fff; margin: 12px; padding: 16px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
-.avatar-wrap { width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; }
+.seller-card { display: flex; align-items: center; gap: 14px; background: #fff; margin: 12px; padding: 16px; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); transition: transform .12s ease; }
+.seller-card:active { transform: scale(.99); }
+.avatar-wrap { width: 52px; height: 52px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; }
 .avatar { font-size: 24px; }
 .seller-info { flex: 1; }
 .seller-email { font-size: 16px; font-weight: 600; }
 .seller-expire { font-size: 12px; color: var(--color-text-placeholder); margin-top: 4px; }
 .arrow { font-size: 20px; color: var(--color-text-placeholder); }
 
-.cell-group { margin: 0 12px 10px; background: #fff; border-radius: 12px; overflow: hidden; }
+.cell-group { margin: 0 12px 10px; background: #fff; border-radius: var(--radius-md); overflow: hidden; }
 .cell-hd { display: flex; align-items: center; padding: 16px; font-size: 15px; cursor: pointer; }
 .cell-ico { margin-right: 10px; font-size: 18px; }
 .cell-arrow { margin-left: auto; color: var(--color-text-placeholder); transition: transform .2s; }
@@ -155,11 +156,13 @@ onUnmounted(() => { if (timer) clearInterval(timer) })
 .cell-body { padding: 4px 16px 16px; font-size: 14px; color: var(--color-text-secondary); }
 .email-current { margin-bottom: 10px; }
 .email-row { display: flex; gap: 10px; margin-top: 8px; align-items: center; }
-.email-input { flex: 1; height: 38px; border: 1px solid var(--color-border); border-radius: 8px; padding: 0 10px; font-size: 14px; outline: none; }
+.email-input { flex: 1; height: 38px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 0 10px; font-size: 14px; outline: none; background: #fafbfc; transition: border-color .15s ease, background .15s ease; }
+.email-input:focus { border-color: var(--color-primary); background: #fff; }
 .text-btn { background: none; border: none; color: var(--color-primary); font-size: 14px; white-space: nowrap; }
 .text-btn:disabled { color: var(--color-text-placeholder); }
 .check-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 14px; }
 .check-tip { font-size: 11px; color: var(--color-text-placeholder); }
 
-.logout-btn { width: calc(100% - 24px); margin: 16px 12px 0; height: 46px; border: 1px solid var(--color-border); background: #fff; border-radius: 12px; font-size: 15px; color: var(--color-danger); }
+.logout-btn { width: calc(100% - 24px); margin: 16px 12px 0; height: 46px; border: 1px solid var(--color-border); background: #fff; border-radius: var(--radius-md); font-size: 15px; color: var(--color-danger); transition: transform .12s ease, background .12s ease; }
+.logout-btn:active { transform: scale(.98); background: #fef2f2; }
 </style>
