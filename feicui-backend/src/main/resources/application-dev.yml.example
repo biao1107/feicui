@@ -1,0 +1,35 @@
+# ============================================================
+# 开发环境配置模板 —— 复制为 application-dev.yml 后填入真实值
+# application-dev.yml 已在 .gitignore 中排除, 不会提交(含密钥)
+# ============================================================
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/gaocui?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: <your-mysql-password>
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: <your-mail@qq.com>
+    password: <your-smtp-auth-code>
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# 阿里云 OSS (商品图片存储)
+oss:
+  endpoint: https://oss-cn-<region>.aliyuncs.com
+  access-key-id: <your-access-key-id>
+  access-key-secret: <your-access-key-secret>
+  bucket-name: <your-bucket-name>
+  domain: https://<your-bucket-name>.oss-cn-<region>.aliyuncs.com
+
+# 阿里 DashScope (通义千问, LangChain4j 调用)
+dashscope:
+  api-key: <your-dashscope-api-key>
+  vision-model: qwen-vl-max
+  chat-model: qwen-plus
