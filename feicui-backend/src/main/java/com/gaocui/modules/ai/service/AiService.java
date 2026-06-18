@@ -1,13 +1,12 @@
 package com.gaocui.modules.ai.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaocui.common.api.ResultCode;
-import com.gaocui.common.config.properties.DashScopeProperties;
 import com.gaocui.common.exception.BusinessException;
 import com.gaocui.modules.ai.dto.AiGenerateResponse;
 import com.gaocui.modules.ai.dto.AiMatchResponse;
+import com.gaocui.modules.ai.dto.MatchResult;
 import com.gaocui.modules.ai.dto.ProductCard;
 import com.gaocui.modules.merchant.entity.Merchant;
 import com.gaocui.modules.merchant.mapper.MerchantMapper;
@@ -21,9 +20,12 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -44,94 +46,51 @@ public class AiService {
     private static final Logger log = LoggerFactory.getLogger(AiService.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    /** 非翡翠需求的固定回复 */
-    private static final String NON_JADE_REPLY =
-            "我是高翠AI，专业找翡翠助手。您可以试着这样问：\n- 找5万左右的冰种翡翠\n- 我要A货，没预算上限";
-
-    private final DashScopeProperties props;
     private final ProductMapper productMapper;
     private final MerchantMapper merchantMapper;
-    private final QwenChatModel chatModel;
+    private final ProductKnowledgeBase knowledgeBase;
     private final QwenChatModel visionModel;
+    private final JadeMatchAssistant matchAssistant;
+    private final String generatePrompt;
+    /** 非翡翠需求的固定回复(从 prompt/non-jade-reply.txt 加载) */
+    private final String nonJadeReply;
 
-    public AiService(DashScopeProperties props, ProductMapper productMapper, MerchantMapper merchantMapper) {
-        this.props = props;
+    public AiService(ProductMapper productMapper, MerchantMapper merchantMapper,
+                     ProductKnowledgeBase knowledgeBase,
+                     @Qualifier("visionModel") QwenChatModel visionModel,
+                     JadeMatchAssistant matchAssistant) {
         this.productMapper = productMapper;
         this.merchantMapper = merchantMapper;
-        this.chatModel = QwenChatModel.builder()
-                .apiKey(props.getApiKey())
-                .modelName(props.getChatModel())
-                .build();
-        this.visionModel = QwenChatModel.builder()
-                .apiKey(props.getApiKey())
-                .modelName(props.getVisionModel())
-                .build();
+        this.knowledgeBase = knowledgeBase;
+        this.visionModel = visionModel;
+        this.matchAssistant = matchAssistant;
+        this.generatePrompt = loadClasspath("prompt/generate-system.txt");
+        this.nonJadeReply = loadClasspath("prompt/non-jade-reply.txt");
     }
 
     // ==================== 找货匹配 ====================
     public AiMatchResponse match(String message) {
-        // 1. 取所有已上架商品作为货源库
-        List<Product> listed = productMapper.selectList(new LambdaQueryWrapper<Product>()
-                .eq(Product::getStatus, Product.STATUS_LISTED));
+        // 1. RAG: 语义检索 top-K 相关商品作为候选(替代全量塞 prompt, 已按相似度排序)
+        List<Product> candidates = loadCandidates(message);
 
-        // 1.1 标记 VIP 商家(生效层级=VIP 且未过期), 供候选排序与 LLM 选品倾斜
-        Set<Long> vipMerchantIds = vipMerchantIdsOf(listed);
+        // 2. 标记 VIP 商家(供 prompt 选品倾斜与卡片标识)
+        Set<Long> vipMerchantIds = vipMerchantIdsOf(candidates);
 
-        // 1.2 候选池 VIP 商品优先排列, 再按上架时间倒序 —— 排序 + prompt 双重引导 LLM 优先 VIP
-        listed.sort((a, b) -> {
-            int av = vipMerchantIds.contains(a.getMerchantId()) ? 0 : 1;
-            int bv = vipMerchantIds.contains(b.getMerchantId()) ? 0 : 1;
-            if (av != bv) {
-                return av - bv;
-            }
-            return b.getCreatedTime().compareTo(a.getCreatedTime());
-        });
-
-        // 2. 构建货源库上下文(精简字段, 含 isVip 标记)
-        String ctx = listed.stream().map(p -> {
-            Map<String, Object> m = new LinkedHashMap<>();
-            m.put("id", p.getId());
-            m.put("isVip", vipMerchantIds.contains(p.getMerchantId()));
-            m.put("title", p.getTitle());
-            m.put("tags", p.getTags());
-            m.put("price", p.getPrice());
-            return toRawJson(m);
-        }).collect(Collectors.joining(","));
-
-        // 3. 让 LLM 判断需求并选品(VIP 优先)
-        String prompt = "你是高翠网的AI找货助手, 专帮买家匹配翡翠货源。\n"
-                + "货源库(JSON数组, isVip 标记是否为VIP商家货源): [" + ctx + "]\n"
-                + "买家需求: \"" + message + "\"\n"
-                + "请判断该需求是否为翡翠找货需求, 并从货源库选出最匹配的(最多3个)商品。\n"
-                + "严格只返回如下JSON, 不要任何额外文字或```标记:\n"
-                + "{\"isJadeNeed\":true或false,\"reply\":\"给买家的简短中文回复(不要写具体件数, 件数由系统展示; 可表达已为您找到优质货源)\","
-                + "\"productIds\":[匹配的商品id, 最多3个]}\n"
-                + "规则: 选品优先级——先按与买家需求的匹配度排序; 匹配度相近时, 优先选择 VIP 商家(isVip=true)的商品; "
-                + "若非翡翠需求, isJadeNeed=false, reply固定为:" + NON_JADE_REPLY + ", productIds为空数组; "
-                + "货源库为空时 productIds 为空数组。";
-
-        JsonNode node = parseJsonObject(chat(prompt, chatModel));
+        // 3. 声明式调用: prompt 与结构化返回交给 LangChain4j AiServices (见 JadeMatchAssistant)
+        MatchResult result = matchAssistant.match(message, buildContext(candidates, vipMerchantIds));
 
         AiMatchResponse resp = new AiMatchResponse();
-        boolean isJade = node.path("isJadeNeed").asBoolean(true);
-        if (!isJade) {
-            resp.setReply(NON_JADE_REPLY);
+        if (!result.isJadeNeed()) {
+            resp.setReply(nonJadeReply);
             resp.setProducts(List.of());
             return resp;
         }
-        resp.setReply(node.path("reply").asText("已为您解析需求，正在匹配优质翡翠货源..."));
+        resp.setReply(result.reply());
 
-        // 4. 按 LLM 返回的 id 顺序装配卡片(LLM 已综合匹配度+VIP 排序)
-        List<Long> ids = new ArrayList<>();
-        node.path("productIds").forEach(n -> {
-            try {
-                ids.add(n.asLong());
-            } catch (Exception ignored) {
-            }
-        });
-        Map<Long, Product> idMap = listed.stream()
+        // 4. 按模型返回的 id 顺序装配卡片
+        Map<Long, Product> idMap = candidates.stream()
                 .collect(Collectors.toMap(Product::getId, p -> p, (a, b) -> a));
-        List<ProductCard> cards = ids.stream()
+        List<ProductCard> cards = result.productIds().stream()
                 .map(idMap::get)
                 .filter(Objects::nonNull)
                 .limit(3)
@@ -141,17 +100,24 @@ public class AiService {
         return resp;
     }
 
+    /** RAG 检索候选: 向量库 top-K 的 productId → 查 Product, 保持相似度顺序 */
+    private List<Product> loadCandidates(String message) {
+        List<Long> ids = knowledgeBase.search(message);
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+        Map<Long, Product> map = productMapper.selectBatchIds(ids).stream()
+                .collect(Collectors.toMap(Product::getId, p -> p, (a, b) -> a));
+        return ids.stream().map(map::get).filter(Objects::nonNull).toList();
+    }
+
     // ==================== 图片转商品文案 ====================
     public AiGenerateResponse generateProductInfo(List<String> images) {
         if (images == null || images.isEmpty()) {
             throw new BusinessException(ResultCode.PARAM_ERROR, "至少需要1张图片");
         }
         String imageUrl = images.get(0);
-        String prompt = "你是翡翠商品文案专家。根据这张翡翠图片生成商品信息, 严格只返回如下JSON, 不要任何额外文字或```标记:\n"
-                + "{\"title\":\"简洁商品标题\",\"brief\":\"50字以内简介\","
-                + "\"description\":\"300字以内详情(种水/颜色/工艺/适合场景)\","
-                + "\"price\":估价纯数字(单位元),\"tags\":[\"标签1\",\"标签2\",\"标签3\"]}";
-        JsonNode node = parseJsonObject(vision(imageUrl, prompt));
+        JsonNode node = parseJsonObject(vision(imageUrl, generatePrompt));
 
         AiGenerateResponse resp = new AiGenerateResponse();
         resp.setTitle(textOf(node, "title"));
@@ -169,12 +135,12 @@ public class AiService {
 
     // ==================== 内部工具 ====================
 
-    private String chat(String prompt, QwenChatModel model) {
-        try {
-            return model.chat(prompt);
+    /** 读取 classpath 资源文件(prompt 工程化: prompt 抽到 resources/prompt/*.txt) */
+    private static String loadClasspath(String path) {
+        try (var in = new ClassPathResource(path).getInputStream()) {
+            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         } catch (Exception e) {
-            log.error("[AI] 文本调用失败", e);
-            throw new BusinessException(ResultCode.AI_SERVICE_ERROR);
+            throw new IllegalStateException("无法加载 prompt 资源: " + path, e);
         }
     }
 
@@ -223,6 +189,19 @@ public class AiService {
         } catch (Exception e) {
             return "{}";
         }
+    }
+
+    /** 构建货源库上下文 JSON(精简字段, 含 isVip 标记) */
+    private String buildContext(List<Product> listed, Set<Long> vipMerchantIds) {
+        return listed.stream().map(p -> {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("id", p.getId());
+            m.put("isVip", vipMerchantIds.contains(p.getMerchantId()));
+            m.put("title", p.getTitle());
+            m.put("tags", p.getTags());
+            m.put("price", p.getPrice());
+            return toRawJson(m);
+        }).collect(Collectors.joining(","));
     }
 
     private ProductCard toCard(Product p, boolean vip) {

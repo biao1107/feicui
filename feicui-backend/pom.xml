@@ -27,8 +27,8 @@
         <hutool.version>5.8.32</hutool.version>
         <java-jwt.version>4.4.0</java-jwt.version>
         <aliyun-oss.version>3.17.4</aliyun-oss.version>
-        <langchain4j.version>1.0.1</langchain4j.version>
-        <langchain4j-community.version>1.0.1-beta6</langchain4j-community.version>
+        <langchain4j.version>1.1.0</langchain4j.version>
+        <langchain4j-community.version>1.1.0-beta7</langchain4j-community.version>
     </properties>
 
     <dependencies>

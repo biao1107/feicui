@@ -7,6 +7,7 @@ import com.gaocui.common.api.ResultCode;
 import com.gaocui.common.exception.BusinessException;
 import com.gaocui.common.oss.OssService;
 import com.gaocui.common.security.SecurityContext;
+import com.gaocui.modules.ai.service.ProductKnowledgeBase;
 import com.gaocui.modules.merchant.entity.Merchant;
 import com.gaocui.modules.merchant.service.MerchantService;
 import com.gaocui.modules.product.dto.ProductDetailVO;
@@ -28,11 +29,14 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final MerchantService merchantService;
     private final OssService ossService;
+    private final ProductKnowledgeBase knowledgeBase;
 
-    public ProductService(ProductMapper productMapper, MerchantService merchantService, OssService ossService) {
+    public ProductService(ProductMapper productMapper, MerchantService merchantService, OssService ossService,
+                          ProductKnowledgeBase knowledgeBase) {
         this.productMapper = productMapper;
         this.merchantService = merchantService;
         this.ossService = ossService;
+        this.knowledgeBase = knowledgeBase;
     }
 
     // ---------- 图片上传 ----------
@@ -56,6 +60,10 @@ public class ProductService {
         Product p = mustGetOwned(id);
         applyFields(p, req);
         productMapper.updateById(p);
+        // 已上架商品编辑后文本变化, 需同步向量库; 草稿/下架不进检索
+        if (Product.STATUS_LISTED.equals(p.getStatus())) {
+            knowledgeBase.rebuild();
+        }
     }
 
     // ---------- 发布 (草稿→上架), 校验额度 ----------
@@ -67,6 +75,7 @@ public class ProductService {
         assertCanList(p.getMerchantId(), id);
         p.setStatus(Product.STATUS_LISTED);
         productMapper.updateById(p);
+        knowledgeBase.rebuild();
     }
 
     // ---------- 上下架状态切换 ----------
@@ -80,12 +89,14 @@ public class ProductService {
         }
         p.setStatus(targetStatus);
         productMapper.updateById(p);
+        knowledgeBase.rebuild();
     }
 
     // ---------- 删除(逻辑删除) ----------
     public void delete(Long id) {
         Product p = mustGetOwned(id);
         productMapper.deleteById(p.getId());
+        knowledgeBase.rebuild();
     }
 
     // ---------- 商品管理列表(按状态过滤, 分页) ----------

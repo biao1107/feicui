@@ -1,0 +1,2 @@
+买家需求: "{{message}}"
+货源库(JSON数组, isVip 标记是否为VIP商家货源): [{{products}}]
