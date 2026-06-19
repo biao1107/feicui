@@ -7,7 +7,7 @@ public class DashboardVO {
 
     /** 已上架商品数 */
     private Long listedCount;
-    /** 发布上限(FREE 2 / VIP 100) */
+    /** 发布上限(FREE 20 / VIP 100) */
     private Integer productLimit;
     /** 今日客资数 */
     private Long todayLeads;
