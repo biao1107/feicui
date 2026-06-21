@@ -2,10 +2,14 @@ package com.gaocui.modules.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 登录/注册请求 (邮箱 + 验证码).
  */
+@Getter
+@Setter
 public class LoginRequest {
 
     @NotBlank(message = "邮箱不能为空")
@@ -14,20 +18,4 @@ public class LoginRequest {
 
     @NotBlank(message = "验证码不能为空")
     private String code;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 }

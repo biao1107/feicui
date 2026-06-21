@@ -29,6 +29,7 @@
         <aliyun-oss.version>3.17.4</aliyun-oss.version>
         <langchain4j.version>1.1.0</langchain4j.version>
         <langchain4j-community.version>1.1.0-beta7</langchain4j-community.version>
+        <lombok.version>1.18.46</lombok.version>
     </properties>
 
     <dependencies>
@@ -109,6 +110,14 @@
             <version>${hutool.version}</version>
         </dependency>
 
+        <!-- ===== Lombok (编译期注解处理器; 非fork模式, 复用Maven自身JVM=JDK21) ===== -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- ===== 测试 ===== -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -120,6 +129,21 @@
     <build>
         <finalName>feicui-backend</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${java.version}</release>
+                    <!-- 非fork模式(默认): 用Maven自身JVM(JDK21)编译, 绕开PATH中失效的Oracle javapath死链 -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
