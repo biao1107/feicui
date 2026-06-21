@@ -57,9 +57,9 @@ public class ProductService {
         Product p = mustGetOwned(id);
         applyFields(p, req);
         productMapper.updateById(p);
-        // 已上架商品编辑后文本变化, 需同步向量库; 草稿/下架不进检索
+        // 已上架商品编辑后文本变化, 增量更新该条向量; 草稿/下架不进检索
         if (Product.STATUS_LISTED.equals(p.getStatus())) {
-            knowledgeBase.rebuild();
+            knowledgeBase.upsert(id);
         }
     }
 
@@ -73,7 +73,7 @@ public class ProductService {
         assertCanList(p.getMerchantId(), id);
         p.setStatus(Product.STATUS_LISTED);
         productMapper.updateById(p);
-        knowledgeBase.rebuild();
+        knowledgeBase.upsert(id);
     }
 
     // ---------- 上下架状态切换 ----------
@@ -88,7 +88,12 @@ public class ProductService {
         }
         p.setStatus(targetStatus);
         productMapper.updateById(p);
-        knowledgeBase.rebuild();
+        // 增量: 上架进向量库, 下架移除
+        if (Product.STATUS_LISTED.equals(targetStatus)) {
+            knowledgeBase.upsert(id);
+        } else {
+            knowledgeBase.remove(id);
+        }
     }
 
     // ---------- 删除(逻辑删除) ----------
@@ -96,7 +101,7 @@ public class ProductService {
     public void delete(Long id) {
         Product p = mustGetOwned(id);
         productMapper.deleteById(p.getId());
-        knowledgeBase.rebuild();
+        knowledgeBase.remove(id);
     }
 
     // ---------- 商品管理列表(按状态过滤, 分页) ----------

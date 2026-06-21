@@ -45,7 +45,7 @@ public class ProductKnowledgeBase implements ApplicationRunner {
     private final ProductMapper productMapper;
     private final EmbeddingModel embeddingModel;
     private final JdbcTemplate jdbcTemplate;
-    private final EmbeddingStore<TextSegment> store;
+    private final InMemoryEmbeddingStore<TextSegment> store;
 
     public ProductKnowledgeBase(EmbeddingModel embeddingModel, ProductMapper productMapper, JdbcTemplate jdbcTemplate) {
         this.embeddingModel = embeddingModel;
@@ -86,7 +86,7 @@ public class ProductKnowledgeBase implements ApplicationRunner {
         for (Product p : listed) {
             float[] vec = cached.get(p.getId());
             if (vec != null) {
-                store.add(Embedding.from(vec), toSegment(p));
+                store.add(String.valueOf(p.getId()), Embedding.from(vec), toSegment(p));
                 hit++;
             }
         }
@@ -109,11 +109,37 @@ public class ProductKnowledgeBase implements ApplicationRunner {
         }
         List<TextSegment> segments = listed.stream().map(this::toSegment).toList();
         List<Embedding> embeddings = embeddingModel.embedAll(segments).content();
-        store.addAll(embeddings, segments);
+        List<String> ids = listed.stream().map(p -> String.valueOf(p.getId())).toList();
+        store.addAll(ids, embeddings, segments);
         for (int i = 0; i < listed.size(); i++) {
             upsertEmbedding(listed.get(i).getId(), embeddings.get(i).vector());
         }
         log.info("[RAG] 商品知识库已重建并持久化, 共 {} 件", listed.size());
+    }
+
+    /**
+     * 增量更新: 单商品上架/编辑 → 只算该条 embedding(不全量重算), upsert 内存库 + 持久化表.
+     * 用 productId 作内存库 id, 保证幂等更新; 商品非上架状态则转为移除.
+     */
+    public void upsert(Long productId) {
+        Product p = productMapper.selectById(productId);
+        if (p == null || !Product.STATUS_LISTED.equals(p.getStatus())) {
+            remove(productId);
+            return;
+        }
+        TextSegment seg = toSegment(p);
+        Embedding emb = embeddingModel.embed(seg).content();
+        store.removeAll(List.of(String.valueOf(productId)));
+        store.add(String.valueOf(productId), emb, seg);
+        upsertEmbedding(productId, emb.vector());
+        log.info("[RAG] 增量更新商品 {} 向量", productId);
+    }
+
+    /** 增量移除: 单商品下架/删除 → 从内存库 + 持久化表移除 */
+    public void remove(Long productId) {
+        store.removeAll(List.of(String.valueOf(productId)));
+        jdbcTemplate.update("DELETE FROM t_product_embedding WHERE product_id = ?", productId);
+        log.info("[RAG] 移除商品 {} 向量", productId);
     }
 
     /** 语义检索 top-K 相关商品的 id(按相似度降序) */
