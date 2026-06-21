@@ -226,15 +226,8 @@ public class AiService {
             return Set.of();
         }
         return merchantMapper.selectBatchIds(merchantIds).stream()
-                .filter(this::isVipEffective)
+                .filter(Merchant::isVipEffective)
                 .map(Merchant::getId)
                 .collect(Collectors.toSet());
-    }
-
-    /** 生效层级为 VIP: tier=VIP 且未到期 */
-    private boolean isVipEffective(Merchant m) {
-        return Merchant.TIER_VIP.equals(m.getTier())
-                && m.getVipExpireTime() != null
-                && m.getVipExpireTime().isAfter(LocalDateTime.now());
     }
 }

@@ -51,12 +51,7 @@ public class MerchantService {
      * (VIP 过期后自动降级展示)
      */
     public String effectiveTier(Merchant m) {
-        if (Merchant.TIER_VIP.equals(m.getTier())
-                && m.getVipExpireTime() != null
-                && m.getVipExpireTime().isAfter(LocalDateTime.now())) {
-            return Merchant.TIER_VIP;
-        }
-        return Merchant.TIER_FREE;
+        return m.effectiveTier();
     }
 
     /** 当前层级对应的发布上限 */

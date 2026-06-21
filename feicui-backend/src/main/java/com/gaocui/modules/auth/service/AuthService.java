@@ -48,12 +48,12 @@ public class AuthService {
             merchantMapper.insert(m);
         }
 
-        String token = jwtUtils.create(m.getId(), m.getEmail(), m.getTier());
+        String token = jwtUtils.create(m.getId(), m.getEmail(), m.effectiveTier());
         LoginResponse resp = new LoginResponse();
         resp.setToken(token);
         resp.setMerchantId(m.getId());
         resp.setEmail(m.getEmail());
-        resp.setTier(m.getTier());
+        resp.setTier(m.effectiveTier());
         resp.setVipExpireTime(m.getVipExpireTime());
         return resp;
     }

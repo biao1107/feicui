@@ -27,4 +27,16 @@ public class Merchant extends BaseEntity {
     private Integer webNotify;
     /** 邮件通知开关: 1 开 0 关 */
     private Integer emailNotify;
+
+    /** 生效层级为 VIP: tier=VIP 且 vipExpireTime 未过期 */
+    public boolean isVipEffective() {
+        return TIER_VIP.equals(tier)
+                && vipExpireTime != null
+                && vipExpireTime.isAfter(LocalDateTime.now());
+    }
+
+    /** 生效的会员层级: VIP 且未到期才算 VIP, 否则 FREE(VIP 过期自动降级) */
+    public String effectiveTier() {
+        return isVipEffective() ? TIER_VIP : TIER_FREE;
+    }
 }
