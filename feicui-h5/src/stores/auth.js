@@ -7,6 +7,8 @@ import { ref, computed } from 'vue'
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('fc_token') || '')
   const merchant = ref(JSON.parse(localStorage.getItem('fc_merchant') || 'null'))
+  /** 上次同步 profile 的时间戳(不持久化); 登录/页面刷新后为 0, 触发首次后台刷新 */
+  const lastProfileSync = ref(0)
 
   const isLogin = computed(() => !!token.value)
   const isVip = computed(() => merchant.value?.tier === 'VIP')
@@ -21,6 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
     localStorage.setItem('fc_token', token.value)
     localStorage.setItem('fc_merchant', JSON.stringify(merchant.value))
+    lastProfileSync.value = 0
   }
 
   function clear() {
@@ -41,5 +44,5 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('fc_merchant', JSON.stringify(merchant.value))
   }
 
-  return { token, merchant, isLogin, isVip, setLogin, setMerchant, clear }
+  return { token, merchant, isLogin, isVip, lastProfileSync, setLogin, setMerchant, clear }
 })

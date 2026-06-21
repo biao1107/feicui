@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { getProfile } from '@/api/merchant'
 
 const routes = [
   // ---- 游客可访问 ----
@@ -32,6 +33,11 @@ router.beforeEach((to, from, next) => {
     const auth = useAuthStore()
     if (!auth.isLogin) {
       return next({ path: '/login', query: { redirect: to.fullPath } })
+    }
+    // 已登录: 节流刷新 profile, 校正 localStorage 中可能过期的 tier(登录后/刷新后触发, 60s 内不重复)
+    if (Date.now() - auth.lastProfileSync > 60000) {
+      auth.lastProfileSync = Date.now()
+      getProfile().then(p => auth.setMerchant(p)).catch(() => {})
     }
   }
   next()
