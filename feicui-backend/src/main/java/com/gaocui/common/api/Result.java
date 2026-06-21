@@ -1,5 +1,8 @@
 package com.gaocui.common.api;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -9,6 +12,8 @@ import java.io.Serializable;
  * { "code": 200, "message": "成功", "data": {...}, "timestamp": 1718000000000 }
  * </pre>
  */
+@Getter
+@Setter
 public class Result<T> implements Serializable {
 
     @Serial
@@ -53,37 +58,5 @@ public class Result<T> implements Serializable {
 
     public static <T> Result<T> error(Integer code, String message) {
         return new Result<>(code, message, null);
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 }

@@ -6,6 +6,7 @@ import com.gaocui.modules.auth.dto.LoginResponse;
 import com.gaocui.modules.auth.dto.SendCodeRequest;
 import com.gaocui.modules.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,15 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
  * 鉴权接口 (游客可访问, 无需登录).
  */
 @Tag(name = "鉴权", description = "邮箱验证码登录/注册")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
 
     @Operation(summary = "发送邮箱验证码(开发期控制台打印)")
     @PostMapping("/send-code")

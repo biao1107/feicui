@@ -9,24 +9,20 @@ import com.gaocui.modules.auth.dto.LoginResponse;
 import com.gaocui.modules.auth.entity.VerificationCode;
 import com.gaocui.modules.merchant.entity.Merchant;
 import com.gaocui.modules.merchant.mapper.MerchantMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
  * 鉴权服务: 发送验证码 + 邮箱验证码登录/注册(二合一).
  * 登录时若邮箱不存在则自动注册为 FREE 商家.
  */
+@RequiredArgsConstructor
 @Service
 public class AuthService {
 
     private final VerifyCodeService verifyCodeService;
     private final MerchantMapper merchantMapper;
     private final JwtUtils jwtUtils;
-
-    public AuthService(VerifyCodeService verifyCodeService, MerchantMapper merchantMapper, JwtUtils jwtUtils) {
-        this.verifyCodeService = verifyCodeService;
-        this.merchantMapper = merchantMapper;
-        this.jwtUtils = jwtUtils;
-    }
 
     /** 发送登录/注册验证码 */
     public void sendCode(String email) {

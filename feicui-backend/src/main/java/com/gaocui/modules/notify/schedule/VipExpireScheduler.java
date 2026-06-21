@@ -6,9 +6,9 @@ import com.gaocui.modules.merchant.entity.Merchant;
 import com.gaocui.modules.merchant.mapper.MerchantMapper;
 import com.gaocui.modules.notify.entity.Notification;
 import com.gaocui.modules.notify.service.NotificationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -19,21 +19,16 @@ import java.util.List;
  * VIP 到期提醒定时任务.
  * 每天 09:00 扫描 30 天内即将到期的 VIP 商家, 生成站内提醒(每天每商家最多1条).
  */
+@RequiredArgsConstructor
+@Slf4j
 @Component
 public class VipExpireScheduler {
 
-    private static final Logger log = LoggerFactory.getLogger(VipExpireScheduler.class);
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final MerchantMapper merchantMapper;
     private final NotificationService notificationService;
     private final GaocuiProperties props;
-
-    public VipExpireScheduler(MerchantMapper merchantMapper, NotificationService notificationService, GaocuiProperties props) {
-        this.merchantMapper = merchantMapper;
-        this.notificationService = notificationService;
-        this.props = props;
-    }
 
     @Scheduled(cron = "0 0 9 * * ?")
     public void checkVipExpiry() {

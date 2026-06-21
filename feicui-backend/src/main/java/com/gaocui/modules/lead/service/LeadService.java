@@ -17,6 +17,7 @@ import com.gaocui.modules.merchant.service.MerchantService;
 import com.gaocui.modules.notify.service.NotificationService;
 import com.gaocui.modules.product.entity.Product;
 import com.gaocui.modules.product.mapper.ProductMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
  * 客资服务: 游客留资、商家客资列表/详情、联系状态、联系方式可见性分层.
  * VIP 全部客资可见完整邮箱; 免费商家: 已联系(CONTACTED)全部完整 + 未联系(PENDING)最近 3 条完整, 其余脱敏(本地名前 3 位 + 完整域名).
  */
+@RequiredArgsConstructor
 @Service
 public class LeadService {
 
@@ -36,16 +38,6 @@ public class LeadService {
     private final MerchantMapper merchantMapper;
     private final MerchantService merchantService;
     private final NotificationService notificationService;
-
-    public LeadService(LeadMapper leadMapper, ProductMapper productMapper,
-                       MerchantMapper merchantMapper, MerchantService merchantService,
-                       NotificationService notificationService) {
-        this.leadMapper = leadMapper;
-        this.productMapper = productMapper;
-        this.merchantMapper = merchantMapper;
-        this.merchantService = merchantService;
-        this.notificationService = notificationService;
-    }
 
     // ==================== 游客留资 ====================
     public Long submit(Long productId, LeadSubmitRequest req) {

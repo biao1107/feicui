@@ -7,6 +7,7 @@ import com.gaocui.modules.merchant.dto.NotificationSettingRequest;
 import com.gaocui.modules.merchant.dto.UpdateEmailRequest;
 import com.gaocui.modules.merchant.service.MerchantService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,15 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
  * 商家后台接口 (需登录, /merchant/** 由 AuthInterceptor 拦截).
  */
 @Tag(name = "商家", description = "资料/面板/通知设置等")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/merchant")
 public class MerchantController {
 
     private final MerchantService merchantService;
-
-    public MerchantController(MerchantService merchantService) {
-        this.merchantService = merchantService;
-    }
 
     @Operation(summary = "获取商家资料(个人中心)")
     @GetMapping("/profile")

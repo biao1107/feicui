@@ -3,8 +3,7 @@ package com.gaocui.common.exception;
 import com.gaocui.common.api.Result;
 import com.gaocui.common.api.ResultCode;
 import jakarta.validation.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -20,10 +19,9 @@ import java.util.stream.Collectors;
  * 全局异常处理器 —— 把所有异常统一转成 {@link Result}.
  * <p>避免把堆栈/SQL 等敏感信息直接抛给前端.</p>
  */
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /** 业务异常 */
     @ExceptionHandler(BusinessException.class)

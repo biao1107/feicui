@@ -5,8 +5,8 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.gaocui.common.api.ResultCode;
 import com.gaocui.common.config.properties.OssProperties;
 import com.gaocui.common.exception.BusinessException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,21 +19,17 @@ import java.util.UUID;
 /**
  * OSS 文件上传服务. 商品图片统一存到 feicui/yyyy/MM/dd/<uuid>.ext.
  */
+@RequiredArgsConstructor
+@Slf4j
 @Service
 public class OssService {
 
-    private static final Logger log = LoggerFactory.getLogger(OssService.class);
     /** 允许的图片类型 */
     private static final Set<String> ALLOWED_TYPES = Set.of(
             "image/jpeg", "image/png", "image/webp", "image/gif");
 
     private final OSS oss;
     private final OssProperties props;
-
-    public OssService(OSS oss, OssProperties props) {
-        this.oss = oss;
-        this.props = props;
-    }
 
     /** 上传图片, 返回可访问 URL */
     public String uploadImage(MultipartFile file) {

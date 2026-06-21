@@ -15,6 +15,7 @@ import com.gaocui.modules.product.dto.ProductListItemVO;
 import com.gaocui.modules.product.dto.ProductSaveRequest;
 import com.gaocui.modules.product.entity.Product;
 import com.gaocui.modules.product.mapper.ProductMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,7 @@ import java.util.List;
 /**
  * 商品服务: 上传图片、草稿/发布/上下架状态机、CRUD、额度校验.
  */
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
@@ -30,14 +32,6 @@ public class ProductService {
     private final MerchantService merchantService;
     private final OssService ossService;
     private final ProductKnowledgeBase knowledgeBase;
-
-    public ProductService(ProductMapper productMapper, MerchantService merchantService, OssService ossService,
-                          ProductKnowledgeBase knowledgeBase) {
-        this.productMapper = productMapper;
-        this.merchantService = merchantService;
-        this.ossService = ossService;
-        this.knowledgeBase = knowledgeBase;
-    }
 
     // ---------- 图片上传 ----------
     public String uploadImage(MultipartFile file) {

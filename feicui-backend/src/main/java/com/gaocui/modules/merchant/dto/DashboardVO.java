@@ -18,4 +18,6 @@ public class DashboardVO {
     private Long todayLeads;
     /** 累计客资数 */
     private Long totalLeads;
+
+
 }

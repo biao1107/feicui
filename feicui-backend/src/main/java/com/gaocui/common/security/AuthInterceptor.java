@@ -9,6 +9,7 @@ import com.gaocui.common.jwt.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -16,15 +17,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * 鉴权拦截器: 校验 Authorization 头中的 JWT, 通过则写入 {@link SecurityContext}.
  * <p>失败时直接写出 401 标准响应.</p>
  */
+@RequiredArgsConstructor
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
     private final JwtUtils jwtUtils;
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public AuthInterceptor(JwtUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

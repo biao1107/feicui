@@ -8,6 +8,7 @@ import com.gaocui.modules.product.dto.ProductSaveRequest;
 import com.gaocui.modules.product.dto.ProductStatusRequest;
 import com.gaocui.modules.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,15 +29,12 @@ import java.util.Map;
  * 状态机: DRAFT 草稿 → LISTED 已上架 ↔ DELISTED 已下架.
  */
 @Tag(name = "商品管理", description = "商家发布/编辑/上下架/删除商品")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/merchant/products")
 public class ProductController {
 
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @Operation(summary = "上传商品图片, 返回可访问 URL")
     @PostMapping("/upload-image")

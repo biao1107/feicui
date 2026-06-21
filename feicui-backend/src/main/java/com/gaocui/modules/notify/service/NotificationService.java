@@ -10,6 +10,7 @@ import com.gaocui.common.security.SecurityContext;
 import com.gaocui.modules.notify.dto.NotificationVO;
 import com.gaocui.modules.notify.entity.Notification;
 import com.gaocui.modules.notify.mapper.NotificationMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +18,11 @@ import java.util.List;
 /**
  * 站内通知服务: 列表、未读数、标记已读, 以及内部"新客资"通知生成.
  */
+@RequiredArgsConstructor
 @Service
 public class NotificationService {
 
     private final NotificationMapper notificationMapper;
-
-    public NotificationService(NotificationMapper notificationMapper) {
-        this.notificationMapper = notificationMapper;
-    }
 
     public PageResult<NotificationVO> page(long current, long size) {
         Long mid = SecurityContext.currentMerchantId();

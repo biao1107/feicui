@@ -18,8 +18,7 @@ import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -40,10 +39,10 @@ import java.util.stream.Collectors;
  * 1. 找货匹配: 文本模型解析买家需求, 从已上架货源中匹配最多3件.
  * 2. 图片转文案: 视觉模型识别翡翠图片, 生成标题/简介/详情/标签/估价.
  */
+@Slf4j
 @Service
 public class AiService {
 
-    private static final Logger log = LoggerFactory.getLogger(AiService.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final ProductMapper productMapper;

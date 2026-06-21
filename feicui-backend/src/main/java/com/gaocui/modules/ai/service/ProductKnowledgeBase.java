@@ -12,8 +12,7 @@ import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -26,10 +25,9 @@ import java.util.Objects;
  * 找货时按买家需求语义检索 top-K 作为候选, 替代"全量塞 prompt".
  * 内存库重启丢失, 启动时全量重建; 商品上下架后调用 rebuild() 同步.
  */
+@Slf4j
 @Component
 public class ProductKnowledgeBase implements ApplicationRunner {
-
-    private static final Logger log = LoggerFactory.getLogger(ProductKnowledgeBase.class);
 
     /** 每次检索返回的候选数 (再由 LLM 从中精选最多3个) */
     private static final int TOP_K = 8;

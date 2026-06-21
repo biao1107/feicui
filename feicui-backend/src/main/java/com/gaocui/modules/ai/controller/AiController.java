@@ -7,6 +7,7 @@ import com.gaocui.modules.ai.dto.AiMatchRequest;
 import com.gaocui.modules.ai.dto.AiMatchResponse;
 import com.gaocui.modules.ai.service.AiService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,14 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
  * 2. /merchant/products/ai-generate 发布商品图片转文案(需登录).
  */
 @Tag(name = "AI", description = "找货匹配 / 图片转文案")
+@RequiredArgsConstructor
 @RestController
 public class AiController {
 
     private final AiService aiService;
-
-    public AiController(AiService aiService) {
-        this.aiService = aiService;
-    }
 
     @Operation(summary = "首页AI找货匹配(游客)")
     @PostMapping("/home/ai/match")

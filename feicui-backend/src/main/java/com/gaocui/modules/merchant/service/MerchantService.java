@@ -15,6 +15,7 @@ import com.gaocui.modules.merchant.entity.Merchant;
 import com.gaocui.modules.merchant.mapper.MerchantMapper;
 import com.gaocui.modules.product.entity.Product;
 import com.gaocui.modules.product.mapper.ProductMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 /**
  * 商家服务: 资料查询、数据面板、修改邮箱、通知设置、VIP/免费分层逻辑.
  */
+@RequiredArgsConstructor
 @Service
 public class MerchantService {
 
@@ -30,14 +32,6 @@ public class MerchantService {
     private final ProductMapper productMapper;
     private final LeadMapper leadMapper;
     private final GaocuiProperties props;
-
-    public MerchantService(MerchantMapper merchantMapper, ProductMapper productMapper,
-                           LeadMapper leadMapper, GaocuiProperties props) {
-        this.merchantMapper = merchantMapper;
-        this.productMapper = productMapper;
-        this.leadMapper = leadMapper;
-        this.props = props;
-    }
 
     /** 获取当前登录商家(由 JWT 拦截器写入 SecurityContext) */
     public Merchant getCurrent() {

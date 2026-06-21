@@ -1,6 +1,8 @@
 package com.gaocui.common.api;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -9,6 +11,8 @@ import java.util.List;
 /**
  * 分页结果封装. 直接接收 MyBatis-Plus 的 IPage 转换.
  */
+@Getter
+@Setter
 public class PageResult<T> implements Serializable {
 
     @Serial
@@ -43,45 +47,5 @@ public class PageResult<T> implements Serializable {
         r.setPages(page.getPages());
         r.setRecords(records);
         return r;
-    }
-
-    public long getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(long current) {
-        this.current = current;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public long getPages() {
-        return pages;
-    }
-
-    public void setPages(long pages) {
-        this.pages = pages;
-    }
-
-    public List<T> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<T> records) {
-        this.records = records;
     }
 }

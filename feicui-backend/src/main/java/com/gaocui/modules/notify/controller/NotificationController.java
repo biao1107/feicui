@@ -5,6 +5,7 @@ import com.gaocui.common.api.Result;
 import com.gaocui.modules.notify.dto.NotificationVO;
 import com.gaocui.modules.notify.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,15 +20,12 @@ import java.util.Map;
  * 系统通知接口 (需登录).
  */
 @Tag(name = "系统通知", description = "站内通知列表/未读数/标记已读")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/merchant/notifications")
 public class NotificationController {
 
     private final NotificationService notificationService;
-
-    public NotificationController(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
 
     @Operation(summary = "通知列表(分页)")
     @GetMapping

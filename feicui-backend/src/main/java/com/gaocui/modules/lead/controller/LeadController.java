@@ -6,6 +6,7 @@ import com.gaocui.modules.lead.dto.LeadDetailVO;
 import com.gaocui.modules.lead.dto.LeadListItemVO;
 import com.gaocui.modules.lead.service.LeadService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,15 +23,12 @@ import java.util.Map;
  * VIP 全部客资可见完整邮箱; 免费商家: 已联系全部完整 + 未联系最近3条完整, 其余脱敏.
  */
 @Tag(name = "客资管理", description = "客资列表/详情/联系状态")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/merchant/leads")
 public class LeadController {
 
     private final LeadService leadService;
-
-    public LeadController(LeadService leadService) {
-        this.leadService = leadService;
-    }
 
     @Operation(summary = "客资列表(按状态过滤, 分页; 免费: 已联系全完整+未联系最近3条完整, 其余脱敏)")
     @GetMapping

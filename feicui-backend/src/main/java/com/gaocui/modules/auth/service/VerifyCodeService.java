@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gaocui.common.config.properties.GaocuiProperties;
 import com.gaocui.modules.auth.entity.VerificationCode;
 import com.gaocui.modules.auth.mapper.VerificationCodeMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,18 +17,13 @@ import java.time.LocalDateTime;
  * 验证码服务.
  * 开发期(devPrint=true)验证码仅控制台打印, 不真实发邮件; 后期接入邮件即可切换.
  */
+@RequiredArgsConstructor
+@Slf4j
 @Service
 public class VerifyCodeService {
 
-    private static final Logger log = LoggerFactory.getLogger(VerifyCodeService.class);
-
     private final VerificationCodeMapper verificationCodeMapper;
     private final GaocuiProperties props;
-
-    public VerifyCodeService(VerificationCodeMapper verificationCodeMapper, GaocuiProperties props) {
-        this.verificationCodeMapper = verificationCodeMapper;
-        this.props = props;
-    }
 
     /** 生成并保存验证码. 开发模式下打印到控制台. */
     public void sendCode(String email, String scene) {
