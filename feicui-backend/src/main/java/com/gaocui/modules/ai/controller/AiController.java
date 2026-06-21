@@ -1,6 +1,7 @@
 package com.gaocui.modules.ai.controller;
 
 import com.gaocui.common.api.Result;
+import com.gaocui.common.api.ResultCode;
 import com.gaocui.modules.ai.dto.AiGenerateRequest;
 import com.gaocui.modules.ai.dto.AiGenerateResponse;
 import com.gaocui.modules.ai.dto.AiMatchRequest;
@@ -13,6 +14,8 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * AI 接口:
@@ -28,8 +31,11 @@ public class AiController {
 
     @Operation(summary = "首页AI找货匹配(游客)")
     @PostMapping("/home/ai/match")
-    public Result<AiMatchResponse> match(@RequestBody @Valid AiMatchRequest req) {
-        return Result.success(aiService.match(req.getMessage()));
+    public CompletableFuture<Result<AiMatchResponse>> match(@RequestBody @Valid AiMatchRequest req) {
+        // 异步: Tomcat 收到 CompletableFuture 立即释放请求线程, AI 调用在 aiExecutor 线程池执行
+        return aiService.matchAsync(req.getMessage())
+                .thenApply(Result::success)
+                .exceptionally(e -> Result.error(ResultCode.AI_SERVICE_ERROR));
     }
 
     @Operation(summary = "发布商品-AI图片转文案(需登录)")

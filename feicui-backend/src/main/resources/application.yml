@@ -19,6 +19,10 @@ spring:
     multipart:
       max-file-size: 20MB        # 单张图片上限
       max-request-size: 100MB    # 单次请求(多图)上限
+  # 异步请求兜底超时(AI 匹配等 CompletableFuture 异步接口)
+  mvc:
+    async:
+      request-timeout: 35000
 
 # ==================== MyBatis-Plus ====================
 mybatis-plus:

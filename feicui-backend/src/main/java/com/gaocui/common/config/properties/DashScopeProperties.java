@@ -19,4 +19,6 @@ public class DashScopeProperties {
     private String chatModel;
     /** 向量模型(商品 RAG 检索), 默认 text-embedding-v3 */
     private String embeddingModel = "text-embedding-v3";
+    /** AI 调用兜底超时(秒): QwenChatModel 不暴露超时, 用 CompletableFuture.orTimeout 保证用户侧必返回 */
+    private long timeoutSec = 35;
 }

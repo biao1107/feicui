@@ -3,6 +3,7 @@ package com.gaocui.modules.ai.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaocui.common.api.ResultCode;
+import com.gaocui.common.config.properties.DashScopeProperties;
 import com.gaocui.common.exception.BusinessException;
 import com.gaocui.modules.ai.dto.AiGenerateResponse;
 import com.gaocui.modules.ai.dto.AiMatchResponse;
@@ -32,6 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -50,6 +54,8 @@ public class AiService {
     private final ProductKnowledgeBase knowledgeBase;
     private final QwenChatModel visionModel;
     private final JadeMatchAssistant matchAssistant;
+    private final Executor aiExecutor;
+    private final DashScopeProperties dashScopeProperties;
     private final String generatePrompt;
     /** 非翡翠需求的固定回复(从 prompt/non-jade-reply.txt 加载) */
     private final String nonJadeReply;
@@ -57,17 +63,32 @@ public class AiService {
     public AiService(ProductMapper productMapper, MerchantMapper merchantMapper,
                      ProductKnowledgeBase knowledgeBase,
                      @Qualifier("visionModel") QwenChatModel visionModel,
-                     JadeMatchAssistant matchAssistant) {
+                     JadeMatchAssistant matchAssistant,
+                     @Qualifier("aiExecutor") Executor aiExecutor,
+                     DashScopeProperties dashScopeProperties) {
         this.productMapper = productMapper;
         this.merchantMapper = merchantMapper;
         this.knowledgeBase = knowledgeBase;
         this.visionModel = visionModel;
         this.matchAssistant = matchAssistant;
+        this.aiExecutor = aiExecutor;
+        this.dashScopeProperties = dashScopeProperties;
         this.generatePrompt = loadClasspath("prompt/generate-system.txt");
         this.nonJadeReply = loadClasspath("prompt/non-jade-reply.txt");
     }
 
     // ==================== 找货匹配 ====================
+
+    /**
+     * 异步找货匹配: 提交到独立 aiExecutor 线程池, 不阻塞 Tomcat 请求线程.
+     * QwenChatModel 不暴露超时, 用 orTimeout 兜底, 保证用户侧在 timeoutSec 内必返回.
+     * 异常(match 内 BusinessException / 超时 TimeoutException)统一由调用方 exceptionally 处理.
+     */
+    public CompletableFuture<AiMatchResponse> matchAsync(String message) {
+        return CompletableFuture.supplyAsync(() -> match(message), aiExecutor)
+                .orTimeout(dashScopeProperties.getTimeoutSec(), TimeUnit.SECONDS);
+    }
+
     public AiMatchResponse match(String message) {
         // 1. RAG: 语义检索 top-K 相关商品作为候选(替代全量塞 prompt, 已按相似度排序)
         List<Product> candidates = loadCandidates(message);
