@@ -110,6 +110,16 @@
             <version>${hutool.version}</version>
         </dependency>
 
+        <!-- ===== Redis 缓存 (商品详情 @Cacheable / AI 结果手动缓存) ===== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
         <!-- ===== Lombok (编译期注解处理器; 非fork模式, 复用Maven自身JVM=JDK21) ===== -->
         <dependency>
             <groupId>org.projectlombok</groupId>

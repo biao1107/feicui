@@ -1,5 +1,6 @@
 package com.gaocui.modules.ai.service;
 
+import cn.hutool.crypto.digest.DigestUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaocui.common.api.ResultCode;
@@ -21,6 +22,7 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +58,7 @@ public class AiService {
     private final JadeMatchAssistant matchAssistant;
     private final Executor aiExecutor;
     private final DashScopeProperties dashScopeProperties;
+    private final StringRedisTemplate redisTemplate;
     private final String generatePrompt;
     /** 非翡翠需求的固定回复(从 prompt/non-jade-reply.txt 加载) */
     private final String nonJadeReply;
@@ -65,7 +68,8 @@ public class AiService {
                      @Qualifier("visionModel") QwenChatModel visionModel,
                      JadeMatchAssistant matchAssistant,
                      @Qualifier("aiExecutor") Executor aiExecutor,
-                     DashScopeProperties dashScopeProperties) {
+                     DashScopeProperties dashScopeProperties,
+                     StringRedisTemplate redisTemplate) {
         this.productMapper = productMapper;
         this.merchantMapper = merchantMapper;
         this.knowledgeBase = knowledgeBase;
@@ -73,20 +77,36 @@ public class AiService {
         this.matchAssistant = matchAssistant;
         this.aiExecutor = aiExecutor;
         this.dashScopeProperties = dashScopeProperties;
+        this.redisTemplate = redisTemplate;
         this.generatePrompt = loadClasspath("prompt/generate-system.txt");
         this.nonJadeReply = loadClasspath("prompt/non-jade-reply.txt");
     }
 
     // ==================== 找货匹配 ====================
 
+    private static final String AI_MATCH_CACHE_PREFIX = "ai:match:";
+    private static final long AI_MATCH_CACHE_TTL_MIN = 5;
+
     /**
      * 异步找货匹配: 提交到独立 aiExecutor 线程池, 不阻塞 Tomcat 请求线程.
+     * 先查 Redis 缓存(相同需求命中秒回, 省 token); 未命中才异步算 LLM 并写缓存.
      * QwenChatModel 不暴露超时, 用 orTimeout 兜底, 保证用户侧在 timeoutSec 内必返回.
-     * 异常(match 内 BusinessException / 超时 TimeoutException)统一由调用方 exceptionally 处理.
      */
     public CompletableFuture<AiMatchResponse> matchAsync(String message) {
-        return CompletableFuture.supplyAsync(() -> match(message), aiExecutor)
-                .orTimeout(dashScopeProperties.getTimeoutSec(), TimeUnit.SECONDS);
+        String key = AI_MATCH_CACHE_PREFIX + DigestUtil.md5Hex(message);
+        String cached = redisTemplate.opsForValue().get(key);
+        if (cached != null) {
+            try {
+                return CompletableFuture.completedFuture(MAPPER.readValue(cached, AiMatchResponse.class));
+            } catch (Exception ignore) { /* 反序列化失败则重新算 */ }
+        }
+        return CompletableFuture.supplyAsync(() -> {
+            AiMatchResponse r = match(message);
+            try {
+                redisTemplate.opsForValue().set(key, MAPPER.writeValueAsString(r), AI_MATCH_CACHE_TTL_MIN, TimeUnit.MINUTES);
+            } catch (Exception ignore) { /* 缓存写入失败不影响主流程 */ }
+            return r;
+        }, aiExecutor).orTimeout(dashScopeProperties.getTimeoutSec(), TimeUnit.SECONDS);
     }
 
     public AiMatchResponse match(String message) {

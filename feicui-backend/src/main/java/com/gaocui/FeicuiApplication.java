@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.cache.annotation.EnableCaching;
 
 /**
  * 高翠网 - AI 翡翠匹配平台 后端启动类.
@@ -19,6 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan("com.gaocui.modules.**.mapper")
 @ConfigurationPropertiesScan("com.gaocui.common.config.properties")
 @EnableScheduling
+@EnableCaching
 public class FeicuiApplication {
 
     public static void main(String[] args) {

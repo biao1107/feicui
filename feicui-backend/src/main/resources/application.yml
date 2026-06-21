@@ -23,6 +23,15 @@ spring:
   mvc:
     async:
       request-timeout: 35000
+  # Redis 缓存(商品详情 @Cacheable / AI 结果手动缓存)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: redis
+    redis:
+      time-to-live: 5m
 
 # ==================== MyBatis-Plus ====================
 mybatis-plus:

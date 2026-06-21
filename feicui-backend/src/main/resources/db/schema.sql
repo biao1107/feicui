@@ -105,3 +105,15 @@ CREATE TABLE `t_notification` (
   PRIMARY KEY (`id`),
   KEY `idx_merchant_read` (`merchant_id`, `is_read`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统通知表';
+
+-- ------------------------------------------------------------
+-- 6. 商品向量持久化表 (RAG: 商品 embedding 落库, 启动免调 DashScope)
+--    embedding: DashScope text-embedding-v3 (1024维), 以 little-endian float[] 存为 MEDIUMBLOB
+-- ------------------------------------------------------------
+DROP TABLE IF EXISTS `t_product_embedding`;
+CREATE TABLE `t_product_embedding` (
+  `product_id`    BIGINT     NOT NULL COMMENT '商品ID(主键, 对应 t_product.id)',
+  `embedding`     MEDIUMBLOB DEFAULT NULL COMMENT '向量(text-embedding-v3 1024维, little-endian float[] 序列化)',
+  `updated_time`  DATETIME   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品向量持久化(RAG)';

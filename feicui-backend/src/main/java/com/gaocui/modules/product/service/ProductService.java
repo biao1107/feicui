@@ -16,6 +16,8 @@ import com.gaocui.modules.product.dto.ProductSaveRequest;
 import com.gaocui.modules.product.entity.Product;
 import com.gaocui.modules.product.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +52,7 @@ public class ProductService {
     }
 
     // ---------- 编辑 ----------
+    @CacheEvict(cacheNames = "productDetail", key = "#id")
     public void update(Long id, ProductSaveRequest req) {
         Product p = mustGetOwned(id);
         applyFields(p, req);
@@ -61,6 +64,7 @@ public class ProductService {
     }
 
     // ---------- 发布 (草稿→上架), 校验额度 ----------
+    @CacheEvict(cacheNames = "productDetail", key = "#id")
     public void publish(Long id) {
         Product p = mustGetOwned(id);
         if (Product.STATUS_LISTED.equals(p.getStatus())) {
@@ -73,6 +77,7 @@ public class ProductService {
     }
 
     // ---------- 上下架状态切换 ----------
+    @CacheEvict(cacheNames = "productDetail", key = "#id")
     public void changeStatus(Long id, String targetStatus) {
         Product p = mustGetOwned(id);
         if (!Product.STATUS_LISTED.equals(targetStatus) && !Product.STATUS_DELISTED.equals(targetStatus)) {
@@ -87,6 +92,7 @@ public class ProductService {
     }
 
     // ---------- 删除(逻辑删除) ----------
+    @CacheEvict(cacheNames = "productDetail", key = "#id")
     public void delete(Long id) {
         Product p = mustGetOwned(id);
         productMapper.deleteById(p.getId());
@@ -113,6 +119,7 @@ public class ProductService {
     }
 
     // ---------- 游客看详情(仅已上架) ----------
+    @Cacheable(cacheNames = "productDetail", key = "#id")
     public ProductDetailVO homeDetail(Long id) {
         Product p = productMapper.selectById(id);
         if (p == null || !Product.STATUS_LISTED.equals(p.getStatus())) {
