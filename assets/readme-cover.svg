@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">高翠网项目视觉封面</title>
+  <desc id="desc">展示高翠网翡翠找货平台的手机端界面与产品能力概览。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f6fbf7"/>
+      <stop offset="55%" stop-color="#eef6f1"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="jade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#cfeee0"/>
+      <stop offset="100%" stop-color="#2f8c57"/>
+    </linearGradient>
+    <linearGradient id="jadeSoft" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3faf6"/>
+      <stop offset="100%" stop-color="#d8f0e4"/>
+    </linearGradient>
+    <linearGradient id="cardBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f7fbf8"/>
+    </linearGradient>
+    <linearGradient id="accentWarm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff3cf"/>
+      <stop offset="100%" stop-color="#f0b84a"/>
+    </linearGradient>
+    <linearGradient id="accentCoral" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe5dc"/>
+      <stop offset="100%" stop-color="#f08b6c"/>
+    </linearGradient>
+    <style>
+      .font { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .title { font-size: 60px; font-weight: 800; fill: #153124; letter-spacing: 0; }
+      .subtitle { font-size: 24px; font-weight: 500; fill: #486054; letter-spacing: 0; }
+      .section { font-size: 26px; font-weight: 700; fill: #183226; }
+      .cardTitle { font-size: 22px; font-weight: 700; fill: #143123; }
+      .cardText { font-size: 16px; font-weight: 500; fill: #557062; }
+      .small { font-size: 15px; font-weight: 500; fill: #6a7f74; }
+      .chip { font-size: 14px; font-weight: 700; fill: #1f4737; }
+      .phoneText { font-size: 14px; font-weight: 500; fill: #3d4f46; }
+      .phoneStrong { font-size: 20px; font-weight: 700; fill: #173226; }
+      .cardShadow { fill: #dfeae4; opacity: 0.85; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="760" fill="url(#bg)"/>
+  <path d="M 1150 0 L 1600 0 L 1600 250 Z" fill="#dff0e4" opacity="0.78"/>
+  <path d="M 0 650 L 350 760 L 0 760 Z" fill="#d4ecdf" opacity="0.85"/>
+  <path d="M 1160 90 L 1600 0 L 1600 122 L 1260 240 Z" fill="#eef9f2" opacity="0.9"/>
+  <path d="M 0 95 L 160 0 L 250 0 L 0 125 Z" fill="#f2fbf6" opacity="0.8"/>
+
+  <g opacity="0.16">
+    <line x1="750" y1="325" x2="1525" y2="325" stroke="#96b9a7" stroke-width="1"/>
+    <line x1="750" y1="372" x2="1490" y2="372" stroke="#96b9a7" stroke-width="1"/>
+    <line x1="750" y1="419" x2="1525" y2="419" stroke="#96b9a7" stroke-width="1"/>
+    <line x1="750" y1="466" x2="1500" y2="466" stroke="#96b9a7" stroke-width="1"/>
+    <line x1="750" y1="513" x2="1525" y2="513" stroke="#96b9a7" stroke-width="1"/>
+  </g>
+
+  <g transform="translate(105 72)">
+    <rect x="0" y="10" width="548" height="650" rx="52" class="cardShadow"/>
+    <rect x="0" y="0" width="548" height="650" rx="52" fill="#0f1a15"/>
+    <rect x="16" y="16" width="516" height="618" rx="40" fill="#f5f8f4"/>
+    <rect x="207" y="8" width="134" height="12" rx="6" fill="#0f1a15"/>
+
+    <rect x="28" y="28" width="492" height="82" rx="28" fill="#ffffff" stroke="#e0ebe4"/>
+    <circle cx="58" cy="69" r="19" fill="#2f8c57"/>
+    <path d="M52 69 L58 63 L64 69 L58 75 Z" fill="#e8fbef"/>
+    <path d="M58 60 L64 69 L58 78 L52 69 Z" fill="#d5f0e4" opacity="0.9"/>
+    <text x="88" y="77" class="font phoneStrong">AI翡翠匹配</text>
+    <rect x="385" y="48" width="112" height="40" rx="20" fill="#2f8c57"/>
+    <text x="441" y="74" text-anchor="middle" class="font" font-size="18" font-weight="700" fill="#ffffff">商家入驻</text>
+
+    <circle cx="57" cy="168" r="20" fill="#2f8c57"/>
+    <rect x="88" y="130" width="320" height="98" rx="24" fill="#ffffff" stroke="#e5ece7"/>
+    <text x="110" y="165" class="font phoneText">已为您匹配合适的翡翠资源，供您挑选。</text>
+    <text x="110" y="191" class="font phoneText">请看下方 3 件候选商品。</text>
+
+    <text x="32" y="275" class="font section">为您找到以下优质资源</text>
+    <text x="366" y="275" class="font small">（共3件）</text>
+
+    <g transform="translate(28 292)">
+      <rect x="0" y="10" width="146" height="236" rx="22" fill="url(#cardBg)" stroke="#e1ebe4"/>
+      <rect x="10" y="20" width="126" height="92" rx="16" fill="#f0f7f1"/>
+      <circle cx="73" cy="66" r="29" fill="none" stroke="url(#jade)" stroke-width="12"/>
+      <circle cx="73" cy="66" r="12" fill="#ffffff" stroke="#bbdcca" stroke-width="4"/>
+      <text x="14" y="141" class="font phoneText" font-size="14">冰种飘绿手镯</text>
+      <rect x="14" y="154" width="38" height="20" rx="10" fill="#eef2f3"/>
+      <text x="33" y="168" text-anchor="middle" class="font" font-size="11" font-weight="700" fill="#5b6d66">手镯</text>
+      <rect x="56" y="154" width="38" height="20" rx="10" fill="#eef2f3"/>
+      <text x="75" y="168" text-anchor="middle" class="font" font-size="11" font-weight="700" fill="#5b6d66">冰种</text>
+      <rect x="98" y="154" width="34" height="20" rx="10" fill="#eef2f3"/>
+      <text x="115" y="168" text-anchor="middle" class="font" font-size="11" font-weight="700" fill="#5b6d66">飘绿</text>
+      <text x="14" y="206" class="font" font-size="18" font-weight="800" fill="#ef4444">￥32,800</text>
+      <rect x="97" y="193" width="38" height="22" rx="5" fill="url(#accentWarm)"/>
+      <text x="116" y="208" text-anchor="middle" class="font" font-size="11" font-weight="800" fill="#7a4f00">VIP</text>
+    </g>
+
+    <g transform="translate(186 292)">
+      <rect x="0" y="10" width="146" height="236" rx="22" fill="url(#cardBg)" stroke="#e1ebe4"/>
+      <rect x="10" y="20" width="126" height="92" rx="16" fill="#f7faf7"/>
+      <circle cx="73" cy="66" r="30" fill="none" stroke="#2ea95f" stroke-width="11"/>
+      <circle cx="73" cy="66" r="17" fill="#dff6e8"/>
+      <text x="14" y="141" class="font phoneText" font-size="14">阳绿戒面</text>
+      <rect x="14" y="154" width="38" height="20" rx="10" fill="#eef2f3"/>
+      <text x="33" y="168" text-anchor="middle" class="font" font-size="11" font-weight="700" fill="#5b6d66">戒指</text>
+      <rect x="56" y="154" width="38" height="20" rx="10" fill="#eef2f3"/>
+      <text x="75" y="168" text-anchor="middle" class="font" font-size="11" font-weight="700" fill="#5b6d66">蛋面</text>
+      <rect x="98" y="154" width="34" height="20" rx="10" fill="#eef2f3"/>
+      <text x="115" y="168" text-anchor="middle" class="font" font-size="11" font-weight="700" fill="#5b6d66">阳绿</text>
+      <text x="14" y="206" class="font" font-size="18" font-weight="800" fill="#ef4444">￥9,800</text>
+      <rect x="97" y="193" width="38" height="22" rx="5" fill="url(#accentWarm)"/>
+      <text x="116" y="208" text-anchor="middle" class="font" font-size="11" font-weight="800" fill="#7a4f00">VIP</text>
+    </g>
+
+    <g transform="translate(344 292)">
+      <rect x="0" y="10" width="146" height="236" rx="22" fill="url(#cardBg)" stroke="#e1ebe4"/>
+      <rect x="10" y="20" width="126" height="92" rx="16" fill="#f4f7f4"/>
+      <circle cx="73" cy="66" r="28" fill="#bfe8d2"/>
+      <circle cx="73" cy="66" r="17" fill="none" stroke="#8dbb9e" stroke-width="8"/>
+      <rect x="69" y="20" width="8" height="82" rx="4" fill="#7f6096"/>
+      <circle cx="73" cy="44" r="10" fill="#d7c1ea" stroke="#7f6096" stroke-width="3"/>
+      <text x="14" y="141" class="font phoneText" font-size="14">紫罗兰圆珠手串</text>
+      <rect x="14" y="154" width="38" height="20" rx="10" fill="#eef2f3"/>
+      <text x="33" y="168" text-anchor="middle" class="font" font-size="11" font-weight="700" fill="#5b6d66">手串</text>
+      <rect x="56" y="154" width="38" height="20" rx="10" fill="#eef2f3"/>
+      <text x="75" y="168" text-anchor="middle" class="font" font-size="11" font-weight="700" fill="#5b6d66">紫罗兰</text>
+      <rect x="98" y="154" width="34" height="20" rx="10" fill="#eef2f3"/>
+      <text x="115" y="168" text-anchor="middle" class="font" font-size="11" font-weight="700" fill="#5b6d66">圆珠</text>
+      <text x="14" y="206" class="font" font-size="18" font-weight="800" fill="#ef4444">￥13,800</text>
+      <rect x="97" y="193" width="38" height="22" rx="5" fill="url(#accentWarm)"/>
+      <text x="116" y="208" text-anchor="middle" class="font" font-size="11" font-weight="800" fill="#7a4f00">VIP</text>
+    </g>
+
+    <rect x="28" y="556" width="360" height="58" rx="18" fill="#ffffff" stroke="#dfe8e2"/>
+    <text x="44" y="583" class="font" font-size="14" fill="#8a9791">请输入您的翡翠需求...</text>
+    <text x="44" y="606" class="font" font-size="13" fill="#6f7f78">支持中文英文等多语言</text>
+    <rect x="404" y="560" width="106" height="50" rx="16" fill="#b7c5bf"/>
+    <text x="457" y="591" text-anchor="middle" class="font" font-size="18" font-weight="700" fill="#ffffff">AI匹配</text>
+    <circle cx="506" cy="512" r="22" fill="#2f8c57"/>
+    <circle cx="506" cy="505" r="6" fill="#d9f2e5"/>
+    <rect x="500" y="513" width="12" height="10" rx="5" fill="#d9f2e5"/>
+  </g>
+
+  <g class="font">
+    <text x="760" y="150" class="title">高翠网 · AI 翡翠匹配平台</text>
+    <text x="760" y="206" class="subtitle">买家自然语言找货，商家后台发布货源、管理客资、接收通知。</text>
+    <text x="760" y="244" class="subtitle">把检索、排序、发布和转化串成一条清楚的业务链。</text>
+
+    <g transform="translate(760 292)">
+      <rect x="0" y="0" width="634" height="90" rx="24" fill="#ffffff" stroke="#dfe9e3"/>
+      <rect x="0" y="0" width="8" height="90" rx="4" fill="#2f8c57"/>
+      <circle cx="42" cy="45" r="20" fill="#e2f3e9"/>
+      <path d="M31 45a11 11 0 1 1 22 0a11 11 0 1 1 -22 0" fill="none" stroke="#2f8c57" stroke-width="4"/>
+      <line x1="48" y1="58" x2="58" y2="68" stroke="#2f8c57" stroke-width="4" stroke-linecap="round"/>
+      <text x="82" y="37" class="cardTitle">语义找货</text>
+      <text x="82" y="65" class="cardText">围绕买家需求召回候选商品，先相关，再排序。</text>
+    </g>
+
+    <g transform="translate(760 402)">
+      <rect x="0" y="0" width="634" height="90" rx="24" fill="#ffffff" stroke="#dfe9e3"/>
+      <rect x="0" y="0" width="8" height="90" rx="4" fill="#f0b84a"/>
+      <rect x="30" y="26" width="42" height="42" rx="10" fill="#fff6da"/>
+      <rect x="39" y="35" width="9" height="9" rx="2" fill="#f0b84a"/>
+      <rect x="52" y="35" width="9" height="9" rx="2" fill="#f0b84a"/>
+      <rect x="39" y="48" width="9" height="9" rx="2" fill="#f0b84a"/>
+      <rect x="52" y="48" width="9" height="9" rx="2" fill="#f0b84a"/>
+      <text x="82" y="37" class="cardTitle">商家管理</text>
+      <text x="82" y="65" class="cardText">商品发布、上下架、客资查看、通知管理一套打通。</text>
+    </g>
+
+    <g transform="translate(760 512)">
+      <rect x="0" y="0" width="634" height="90" rx="24" fill="#ffffff" stroke="#dfe9e3"/>
+      <rect x="0" y="0" width="8" height="90" rx="4" fill="#f08b6c"/>
+      <rect x="30" y="24" width="42" height="44" rx="12" fill="#fff0ea"/>
+      <path d="M40 35h22v18H49l-7 7v-7h-2z" fill="#f08b6c"/>
+      <circle cx="52" cy="47" r="3" fill="#fff"/>
+      <circle cx="59" cy="47" r="3" fill="#fff"/>
+      <circle cx="45" cy="47" r="3" fill="#fff"/>
+      <text x="82" y="37" class="cardTitle">图片转文案</text>
+      <text x="82" y="65" class="cardText">商品图自动生成标题、简介、详情和标签。</text>
+    </g>
+
+    <g transform="translate(760 632)">
+      <rect x="0" y="0" width="634" height="48" rx="18" fill="#edf6f0" stroke="#d9e7e0"/>
+      <text x="28" y="31" class="chip">Spring Boot 3.2.5</text>
+      <text x="180" y="31" class="chip">JDK 21</text>
+      <text x="286" y="31" class="chip">MySQL 8</text>
+      <text x="402" y="31" class="chip">Redis</text>
+      <text x="492" y="31" class="chip">OSS</text>
+      <text x="570" y="31" class="chip">JWT</text>
+    </g>
+  </g>
+</svg>

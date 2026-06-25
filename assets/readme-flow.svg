@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="540" viewBox="0 0 1600 540" role="img" aria-labelledby="title desc">
+  <title id="title">高翠网核心流程示意</title>
+  <desc id="desc">展示买家找货、AI 召回、模型排序、商家转化的业务流程。</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbfcfb"/>
+      <stop offset="100%" stop-color="#eef6f1"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fbf8"/>
+    </linearGradient>
+    <style>
+      .font { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .title { font-size: 42px; font-weight: 800; fill: #173124; }
+      .sub { font-size: 20px; font-weight: 500; fill: #587065; }
+      .step { font-size: 14px; font-weight: 800; fill: #3d5a4a; letter-spacing: 0.8px; }
+      .cardTitle { font-size: 24px; font-weight: 800; fill: #183124; }
+      .cardText { font-size: 16px; font-weight: 500; fill: #5c7066; }
+      .pill { font-size: 14px; font-weight: 700; fill: #264a39; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="540" fill="url(#bg2)"/>
+  <path d="M 0 460 L 300 540 L 0 540 Z" fill="#dff0e4"/>
+  <path d="M 1360 0 L 1600 0 L 1600 150 Z" fill="#dff0e4"/>
+  <path d="M 1040 0 L 1600 0 L 1600 48 L 1100 132 Z" fill="#f4faf6"/>
+
+  <g class="font">
+    <text x="120" y="94" class="title">从需求到客资，链路更清楚</text>
+    <text x="120" y="132" class="sub">把“买家找货 - AI 选品 - 商家转化”串成一条可展示、可运营的流程。</text>
+  </g>
+
+  <g transform="translate(120 190)">
+    <rect x="0" y="0" width="290" height="228" rx="26" fill="url(#card)" stroke="#dce7e0"/>
+    <circle cx="46" cy="42" r="20" fill="#e5f4eb"/>
+    <text x="46" y="48" text-anchor="middle" class="font" font-size="18" font-weight="800" fill="#2f8c57">1</text>
+    <text x="82" y="44" class="font step">需求输入</text>
+    <text x="30" y="96" class="font cardTitle">买家描述需求</text>
+    <text x="30" y="130" class="font cardText">“我想找一条阳绿手镯，预算两万左右。”</text>
+    <rect x="30" y="154" width="230" height="50" rx="18" fill="#f5fbf7" stroke="#dce8e2"/>
+    <text x="52" y="185" class="font" font-size="14" font-weight="700" fill="#6c7d75">自然语言</text>
+    <circle cx="224" cy="179" r="12" fill="#2f8c57"/>
+    <path d="M219 179h10" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M224 174v10" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="30" y="226" class="font cardText">一句话就能启动找货。</text>
+  </g>
+
+  <g transform="translate(440 190)">
+    <rect x="0" y="0" width="290" height="228" rx="26" fill="url(#card)" stroke="#dce7e0"/>
+    <circle cx="46" cy="42" r="20" fill="#fff3d8"/>
+    <text x="46" y="48" text-anchor="middle" class="font" font-size="18" font-weight="800" fill="#c18a00">2</text>
+    <text x="82" y="44" class="font step">语义召回</text>
+    <text x="30" y="96" class="font cardTitle">先把候选捞出来</text>
+    <text x="30" y="130" class="font cardText">向量库先召回相关商品，再交给模型精排。</text>
+    <rect x="30" y="154" width="230" height="20" rx="10" fill="#edf5ef"/>
+    <rect x="30" y="180" width="206" height="20" rx="10" fill="#edf5ef"/>
+    <rect x="30" y="206" width="188" height="20" rx="10" fill="#edf5ef"/>
+    <circle cx="242" cy="164" r="11" fill="#2f8c57"/>
+    <circle cx="242" cy="190" r="11" fill="#2f8c57" opacity="0.82"/>
+    <circle cx="242" cy="216" r="11" fill="#2f8c57" opacity="0.64"/>
+  </g>
+
+  <g transform="translate(760 190)">
+    <rect x="0" y="0" width="290" height="228" rx="26" fill="url(#card)" stroke="#dce7e0"/>
+    <circle cx="46" cy="42" r="20" fill="#ffe3db"/>
+    <text x="46" y="48" text-anchor="middle" class="font" font-size="18" font-weight="800" fill="#f08b6c">3</text>
+    <text x="82" y="44" class="font step">模型排序</text>
+    <text x="30" y="96" class="font cardTitle">从候选里选出 3 张卡片</text>
+    <text x="30" y="130" class="font cardText">模型输出结构化 JSON，前端直接渲染结果。</text>
+    <rect x="30" y="154" width="230" height="22" rx="8" fill="#f7faf7" stroke="#dfe8e2"/>
+    <rect x="30" y="183" width="210" height="22" rx="8" fill="#f7faf7" stroke="#dfe8e2"/>
+    <rect x="30" y="212" width="190" height="22" rx="8" fill="#f7faf7" stroke="#dfe8e2"/>
+    <rect x="34" y="158" width="86" height="14" rx="7" fill="#2f8c57"/>
+    <rect x="34" y="187" width="66" height="14" rx="7" fill="#2f8c57" opacity="0.82"/>
+    <rect x="34" y="216" width="74" height="14" rx="7" fill="#2f8c57" opacity="0.64"/>
+  </g>
+
+  <g transform="translate(1080 190)">
+    <rect x="0" y="0" width="290" height="228" rx="26" fill="url(#card)" stroke="#dce7e0"/>
+    <circle cx="46" cy="42" r="20" fill="#e5f4eb"/>
+    <text x="46" y="48" text-anchor="middle" class="font" font-size="18" font-weight="800" fill="#2f8c57">4</text>
+    <text x="82" y="44" class="font step">业务转化</text>
+    <text x="30" y="96" class="font cardTitle">商家收到客资和通知</text>
+    <text x="30" y="130" class="font cardText">发布、沟通、留资、提醒都在同一个闭环里。</text>
+    <rect x="30" y="154" width="230" height="50" rx="18" fill="#f5fbf7" stroke="#dce8e2"/>
+    <circle cx="56" cy="179" r="12" fill="#f0b84a"/>
+    <path d="M51 179h10" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M56 174v10" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="82" y="184" class="font" font-size="14" font-weight="700" fill="#5c7066">客资通知</text>
+    <text x="30" y="226" class="font cardText">让线索尽快流转到商家手里。</text>
+  </g>
+
+  <g class="font" opacity="0.9">
+    <path d="M410 304 h24" stroke="#2f8c57" stroke-width="4" stroke-linecap="round"/>
+    <path d="M676 304 h24" stroke="#2f8c57" stroke-width="4" stroke-linecap="round"/>
+    <path d="M996 304 h24" stroke="#2f8c57" stroke-width="4" stroke-linecap="round"/>
+    <path d="M398 294 l20 10 -20 10" fill="none" stroke="#2f8c57" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M664 294 l20 10 -20 10" fill="none" stroke="#2f8c57" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M984 294 l20 10 -20 10" fill="none" stroke="#2f8c57" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g transform="translate(120 452)" class="font">
+    <rect x="0" y="0" width="125" height="38" rx="19" fill="#edf6f0" stroke="#dce7e0"/>
+    <text x="62" y="25" text-anchor="middle" class="pill">前台 H5</text>
+    <rect x="140" y="0" width="125" height="38" rx="19" fill="#edf6f0" stroke="#dce7e0"/>
+    <text x="202" y="25" text-anchor="middle" class="pill">商家后台</text>
+    <rect x="280" y="0" width="125" height="38" rx="19" fill="#edf6f0" stroke="#dce7e0"/>
+    <text x="342" y="25" text-anchor="middle" class="pill">向量库</text>
+    <rect x="420" y="0" width="125" height="38" rx="19" fill="#edf6f0" stroke="#dce7e0"/>
+    <text x="482" y="25" text-anchor="middle" class="pill">火山方舟</text>
+    <rect x="560" y="0" width="125" height="38" rx="19" fill="#edf6f0" stroke="#dce7e0"/>
+    <text x="622" y="25" text-anchor="middle" class="pill">Redis</text>
+  </g>
+</svg>
